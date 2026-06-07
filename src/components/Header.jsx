@@ -16,7 +16,7 @@ const Header = () => {
   const isPlay = useMusicStore(state => state.isPlay)
   const setIsPlay = useMusicStore(state => state.setIsPlay)
   const [dt, setDt] = useState(null)
-  const [ct, setCt] = useState(null)
+  const [ct, setCt] = useState(0)
   const [vol, setVol] = useState(0.5)
   // const [mode, setMode] = useState('list')
   const mode = useMusicStore(state => state.mode)
@@ -28,7 +28,7 @@ const Header = () => {
   const sameIndexAndIdButReStart = useMusicStore(state => state.sameIndexAndIdButReStart)
 
   useEffect(() => {
-    if (!audioRef.current) return
+    if (!url || !audioRef.current) return
     audioRef.current.currentTime = 0
     audioRef.current.play()
   }, [sameIndexAndIdButReStart])
@@ -121,7 +121,8 @@ const Header = () => {
   useEffect(() => {
     if (!url || !audioRef.current) return
     const handleLmd = () => {
-      setDt(Math.round(audioRef.current.duration))
+      setDt(audioRef.current.duration)
+      console.log('console: dt', audioRef.current.duration)
     }
     audioRef.current.addEventListener('loadedmetadata', handleLmd)
     return () => {
@@ -133,6 +134,7 @@ const Header = () => {
   useEffect(() => {
     if (!url || !audioRef.current) return
     const handleTu = () => {
+      // console.log('console: tu', audioRef.current.currentTime)
       const currentSecond = Math.round(audioRef.current.currentTime)
       if (currentSecond !== lastCtSecond.current) {
         lastCtSecond.current = currentSecond
@@ -146,19 +148,19 @@ const Header = () => {
   }, [url])
 
   const [isSeeking, setIsSeeking] = useState(false)
-  const [seekProgress, setSeekProgress] = useState(0)
+  const [seekCt, setSeekCt] = useState(0)
   const handleSliderChange = e => {
-    // setCt(newCt)
-    setSeekProgress(Number(e.target.value))
+    setSeekCt(Number(e.target.value))
   }
 
   const handleSeekStart = e => {
-    setSeekProgress(Number(e.target.value))
+    setSeekCt(Number(e.target.value))
     setIsSeeking(true)
   }
 
   const handleSeekEnd = e => {
-    const newCt = (e.target.value / 100) * dt
+    const newCt = Number(e.target.value)
+    console.log('console: end', newCt)
     audioRef.current.currentTime = newCt
     setCt(Math.round(newCt))
     setIsSeeking(false)
@@ -171,11 +173,13 @@ const Header = () => {
     const s = String(seconds % 60).padStart(2, '0')
     return `${m}:${s}`
   }
-  const fmtCt = dt ? formatTime(ct) : '--:--'
-  const fmtRestDt = dt ? formatTime(dt - ct) : '--:--'
-  const progress = dt ? (ct / dt) * 100 : 0
-
-  const progressVal = isSeeking ? seekProgress : progress
+  let displayCt = '--:--'
+  let displayRestDt = '--:--'
+  if (dt !== null) {
+    displayCt = formatTime(Math.min(Math.round(ct), Math.round(dt))) // // 存在 元数据duration < 实际可播放长度 的情况，音频文件末尾存在静默 padding
+    displayRestDt = formatTime(Math.max(0, Math.round(dt - ct)))
+  }
+  // const progress = dt ? (ct / dt) * 100 : 0
 
   const handleModeClick = () => {
     const modes = ['list', 'listLoop', 'singleLoop']
@@ -218,18 +222,19 @@ const Header = () => {
           <div className="whitespace-nowrap overflow-hidden text-ellipsis">{song.name}</div>
           <div className="whitespace-nowrap overflow-hidden text-ellipsis">{song.artists}</div>
           <div className="w-full flex items-center justify-between gap-1">
-            <span>{fmtCt}</span>
+            <span>{displayCt}</span>
             <input
               className="flex-1"
               type="range"
               min="0"
-              max="100"
-              value={progressVal}
+              max={dt ?? 0}
+              step="0.1"
+              value={isSeeking ? seekCt : ct}
               onChange={handleSliderChange}
               onPointerDown={handleSeekStart}
               onPointerUp={handleSeekEnd}
             />
-            <span>{fmtRestDt}</span>
+            <span>{displayRestDt}</span>
           </div>
         </div>
       </div>
