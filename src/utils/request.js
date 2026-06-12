@@ -7,8 +7,26 @@ const service = axios.create({
 })
 
 service.interceptors.request.use(config => {
-  const token = localStorage.getItem('token')
-  if (token) config.headers.Authorization = `Bearer ${token}`
+  const cookie = localStorage.getItem('cookie')
+  if (cookie) {
+    if (config.method === 'get') {
+      config.params = {
+        ...config.params,
+        cookie,
+      }
+    }
+    if (config.method === 'post') {
+      config.data = {
+        ...config.data,
+        cookie,
+      }
+    }
+  }
+
+  if (config.method === 'post') {
+    config.url += `${config.url.includes('?') ? '&' : '?'}timestamp=${Date.now()}`
+  }
+
   return config
 })
 
@@ -16,7 +34,7 @@ service.interceptors.response.use(
   res => res.data,
   async error => {
     if (error.response?.status === 401) logout()
-
+    alert(error.response?.data?.code + ': ' + error.response?.data?.message)
     return Promise.reject(error)
   }
 )

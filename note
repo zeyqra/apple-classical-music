@@ -1,0 +1,126 @@
+点击 歌曲/专辑播放
+(点击 加入列表前端/末端)
+点击 播放/暂停
+监听 播放/暂停
+点击 上一首/下一首
+监听 播放结束/播放从头开始
+点击 播放顺序
+拖动 进度条
+显示 进度条/已播放时长/总时长
+拖动 音量
+
+playlist: [{id}] | [] (store)
+id: null (store)
+url: null 
+audioRef: null
+isPlay: false (store)
+duration: null
+currentTime: null
+mode: 'list'
+
+初始化：
+  playlist[] & audioRef[null=>Object]
+  系统重置；id[null] & url[null] & isPlay[false] & duration[null] & currentTime[null] & mode['list']
+点击 歌曲/专辑*播放*：
+  pause() - setPlayId - url[null] & isPlay[false] & duration[null] & currentTime[null]
+  playlist-id => url => loadsource - play() & getDuration & syncCurrenTime
+点击 暂停
+  pause() & syncCurrenTimeClearTimer
+点击 播放
+  play() & syncCurrenTime
+点击 上一首/下一首
+  pause() - setPlayId - url[null] & isPlay[false] & duration[null] & currentTime[null]
+  playlist-id => url => loadsource - play() & getDuration & syncCurrenTime
+
+播放器(time、loop、muted、played、volume || play() || canplaythrough、play、ended)
+数据(id、url)
+状态(play、time、volume、order)
+
+
+初始化：所有数据为空
+点击 播放(歌曲/专辑)：(queue和播放无关)
+  数据 获取id[其他组件设置id] => useUrl()-url
+  播放器 暂停、时间清空，监听canplaythrough => 播放、同步时间
+  状态 暂停、时间
+点击 暂停
+  播放器 暂停 清除同步时间
+点击 播放
+  播放器 播放、同步时间
+点击 上一首/下一首
+  数据 获取id => url
+    获取id 临界
+      single: 从头开始
+      list: 暂停 & 从头开始
+      listLoop: 无临界
+      random: 从头开始
+      总之：有playId不变的情况，手动设置暂停和currentTime
+  播放器 暂停、时间清空，监听canplaythrough => 播放、同步时间
+播放结束 监听ended => 
+  数据 获取id => url
+  播放器 暂停、时间清空，监听canplaythrough => 播放、同步时间
+拖动 进度条
+  状态 时间
+  播放器 时间
+
+
+  effect: playId => isPlay[false] & time[null] & 置空url ？？？
+
+  effect: url => 监听canplaythrough => play[true] & 同步time[duration & setInterval: currentTime]
+
+  effect: url => 监听ended => getNextPlayId()-setPlayId
+
+  effect: isPlay => play()/pause()
+
+  effect: isPlay => 同步/取消同步time
+
+  effect: ct => aduio.currentTime
+
+  getPrevNextPlayId(delta) -> newPlayId(可能和上一个相同)，相同就手动设置暂停和currentTime
+  playPrevNext(delta)
+
+  ct间歇获取和ct手动设置如何组合，是个难点
+
+
+  
+  effect: playId变（意味着播放器立即重置，等待newUrl） => pause() & 置空url ？？？
+
+  effect: url => 监听canplaythrough => play()
+  effect: url => 监听loadedmetadata => set dt
+
+  effect: url => 监听timeupdate => set ct(渲染时取整)
+  effect: url => 监听volumnchange => set vol(渲染时取整)
+  effect: url => 监听ended => playPrevNext(1)
+  effect: url => 监听play/pause => set isPlay
+
+  click play/pause => play()/pause()
+  click next/prev => set id
+  click ct => currentTime()
+  click vol => volumn()
+
+  play(delta)
+  专辑播放（无边界情况）、上一首、下一首自动播完
+  一般逻辑：
+    list（loop） ：setqueue song（id） out，newid playing（id in，newid playing），setid queue的下（上）一个newid
+    single：只需要设置播放器的ct
+  边界逻辑：
+    list：newid不变，queue不变，设置ct
+    listloop：newid取第一首（最后一首），queue 所有song in（out），第一首（最后一首）playing
+
+
+
+
+  随机模式：点击：queue打乱-所有song sort，status不变
+    一般逻辑变不变
+    边界逻辑不变
+  取消点击：所有song不按sort排序，playing之后的设为in，之前的设为out
+
+
+  点击播放-拿到新id-列队中移除-设置列队
+  新id=旧id-设置audio暂停时间（播放器中才存在）
+  single：当前歌曲播放完，不设置列队
+  list：最后一首播放完，不设置列队
+  listLoop：最后一首播放完，设置列队
+  拿到下一首
+
+
+  MUSIC_A_T=1539934319659; Max-Age=2147483647; Expires=Tue, 29 Jun 2094 06:30:43 GMT; Path=/wapi/clientlog;;MUSIC_R_U=0098BF37F4EE0CE0E12F5F748BF107CCBAAE1187CC55497FECDDE504C9E207CB23DE7DC4C7FAE75DCBEFA27BA0F9475B3FAE3917C887BBAA1605F52B41ADFEDBB8C9B65351AF52DB62A2F65AA5C3850599; Max-Age=15552000; Expires=Tue, 08 Dec 2026 03:16:36 GMT; Path=/eapi/login/token/refresh;;MUSIC_A_T=1539934319659; Max-Age=2147483647; Expires=Tue, 29 Jun 2094 06:30:43 GMT; Path=/eapi/clientlog;;MUSIC_R_T=1539934396584; Max-Age=2147483647; Expires=Tue, 29 Jun 2094 06:30:43 GMT; Path=/openapi/clientlog;;MUSIC_A_T=1539934319659; Max-Age=2147483647; Expires=Tue, 29 Jun 2094 06:30:43 GMT; Path=/api/clientlog;;MUSIC_R_T=1539934396584; Max-Age=2147483647; Expires=Tue, 29 Jun 2094 06:30:43 GMT; Path=/wapi/feedback;;MUSIC_SNS=; Max-Age=0; Expires=Thu, 11 Jun 2026 03:16:36 GMT; Path=/;MUSIC_A_T=1539934319659; Max-Age=2147483647; Expires=Tue, 29 Jun 2094 06:30:43 GMT; Path=/wapi/feedback;;MUSIC_R_T=1539934396584; Max-Age=2147483647; Expires=Tue, 29 Jun 2094 06:30:43 GMT; Path=/neapi/feedback;;MUSIC_A_T=1539934319659; Max-Age=2147483647; Expires=Tue, 29 Jun 2094 06:30:43 GMT; Path=/openapi/clientlog;;MUSIC_A_T=1539934319659; Max-Age=2147483647; Expires=Tue, 29 Jun 2094 06:30:43 GMT; Path=/weapi/clientlog;;MUSIC_A_T=1539934319659; Max-Age=2147483647; Expires=Tue, 29 Jun 2094 06:30:43 GMT; Path=/eapi/feedback;;MUSIC_R_T=1539934396584; Max-Age=2147483647; Expires=Tue, 29 Jun 2094 06:30:43 GMT; Path=/api/feedback;;__csrf=a54125e64e400dcdac21de9576761294; Max-Age=1296010; Expires=Fri, 26 Jun 2026 03:16:46 GMT; Path=/;;MUSIC_R_T=1539934396584; Max-Age=2147483647; Expires=Tue, 29 Jun 2094 06:30:43 GMT; Path=/eapi/feedback;;MUSIC_R_T=1539934396584; Max-Age=2147483647; Expires=Tue, 29 Jun 2094 06:30:43 GMT; Path=/wapi/clientlog;;MUSIC_R_U=0098BF37F4EE0CE0E12F5F748BF107CCBAAE1187CC55497FECDDE504C9E207CB23DE7DC4C7FAE75DCBEFA27BA0F9475B3FAE3917C887BBAA1605F52B41ADFEDBB8C9B65351AF52DB62A2F65AA5C3850599; Max-Age=15552000; Expires=Tue, 08 Dec 2026 03:16:36 GMT; Path=/api/login/token/refresh;;MUSIC_R_T=1539934396584; Max-Age=2147483647; Expires=Tue, 29 Jun 2094 06:30:43 GMT; Path=/weapi/clientlog;;MUSIC_R_T=1539934396584; Max-Age=2147483647; Expires=Tue, 29 Jun 2094 06:30:43 GMT; Path=/api/clientlog;;NMTID=00Oci2Efo_ZC6S1CUWbgDi7YnTGDHwAAAGetK6C8Q; Max-Age=315360000; Expires=Sun, 08 Jun 2036 03:16:36 GMT; Path=/;;MUSIC_A_T=1539934319659; Max-Age=2147483647; Expires=Tue, 29 Jun 2094 06:30:43 GMT; Path=/weapi/feedback;;MUSIC_A_T=1539934319659; Max-Age=2147483647; Expires=Tue, 29 Jun 2094 06:30:43 GMT; Path=/api/feedback;;MUSIC_R_T=1539934396584; Max-Age=2147483647; Expires=Tue, 29 Jun 2094 06:30:43 GMT; Path=/weapi/feedback;;MUSIC_R_T=1539934396584; Max-Age=2147483647; Expires=Tue, 29 Jun 2094 06:30:43 GMT; Path=/neapi/clientlog;;MUSIC_R_T=1539934396584; Max-Age=2147483647; Expires=Tue, 29 Jun 2094 06:30:43 GMT; Path=/eapi/clientlog;;MUSIC_A_T=1539934319659; Max-Age=2147483647; Expires=Tue, 29 Jun 2094 06:30:43 GMT; Path=/neapi/clientlog;;MUSIC_U=0058AF082EF6ED928AF12E6DE8A92D5DD9229BFC0717314C5C7A4CD3122CDA1CAEE1119FE26F8E4795398DC53B4A0FC55A7438F95038C04D36186638D89242E453E00E59B32C34DB1A1F4186A0F7DDB0789C366F653024AC4670D12A75702637ECE73CED4CBA8917470B24540DCA12636D138C0CC70837628C323E4B0CD80FB77ECAFF9C8C0DCA7C13A5D33C5AEEC2353E7B24A51D92CA618C68248AEB0948F76A9DE0CD6B6BA232C900E3C6948B21CF4E96B16379875926090F1002809EFB5DB8AA92AA5245C988A3BAE17E3A8745BFE19A4AE00EC03F6AC50ED4AAD47A7FD376AA87D57BBECA225872FC3D9261A4C6D365A0F3E067C416FC60B5695AB52065407EBEE1C86AC279877C8741A75FAA21C911D02D38FF868E586F43D7BF62800A615C76E2E0BF46973079C11D5A13167EF878D4898E365F532BDA2AF3EB628DB5805DBCE996EC3E432D0C8785441A693052910C71FE911F7DE09345E49B52943828C3C7D157DB1C4D693C733C403BF3C96BDD6598A1E3C64157F006E2EC3C2E8208BFD6B8532A68D03D26D74EA4E3E727088FC4B56A66958AFF6850B21386B5CF28; Max-Age=15552000; Expires=Tue, 08 Dec 2026 03:16:36 GMT; Path=/;;MUSIC_A_T=1539934319659; Max-Age=2147483647; Expires=Tue, 29 Jun 2094 06:30:43 GMT; Path=/neapi/feedback;
