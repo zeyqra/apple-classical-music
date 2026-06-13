@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 
 const DropDown = ({ trigger, menu }) => {
   const triggerRef = useRef(null)
@@ -6,7 +6,7 @@ const DropDown = ({ trigger, menu }) => {
   const [menuClass, setMenuClass] = useState('left-0')
   const [isOpen, setIsOpen] = useState(false)
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const triggerEl = triggerRef.current
     const menuEl = menuRef.current
 

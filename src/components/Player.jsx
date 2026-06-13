@@ -195,10 +195,9 @@ const Player = () => {
   // const handleAvatarClick = () => {}
 
   return (
-    <div className="Player flex items-center justify-between">
-      {/* {JSON.stringify(url)} */}
+    <>
       {/* control buttons */}
-      <div className="flex items-center justify-center gap-1">
+      <div className="flex items-center justify-center gap-2">
         <button onClick={() => handlePrevNextClick(-1)}>Prev</button>
         <button onClick={handlePlayPauseClick}>{isPlay ? 'Pause' : 'Play'}</button>
         <button onClick={() => handlePrevNextClick(1)}>Next</button>
@@ -206,7 +205,7 @@ const Player = () => {
       </div>
 
       {/* song info */}
-      <div className="flex items-center gap-1">
+      <div className="flex items-center gap-1 w-[35%]">
         {/* onClick={handleCoverClick} */}
         <audio className="hidden" ref={audioRef}></audio>
         <img className="w-10 h-10" src={song.alPicUrl} alt="song cover" />
@@ -243,7 +242,7 @@ const Player = () => {
           onChange={handleVolChange}
         />
       </div>
-    </div>
+    </>
   )
 }
 

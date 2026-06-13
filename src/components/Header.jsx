@@ -4,6 +4,8 @@ import Login from './Login'
 import Player from './Player'
 import { useLoginStatus } from '../hooks/useAuth'
 import DropDown from './DropDown'
+import useUserStore from '../stores/user'
+import { logout } from '../utils'
 
 const Header = () => {
   const setIsSbOpen = useAppStore(state => state.setIsSbOpen)
@@ -14,30 +16,39 @@ const Header = () => {
     setSbType('queue')
   }
 
+  const cookie = useUserStore(state => state.cookie)
   const { data: loginStatusData } = useLoginStatus()
   console.log('console: loginStatusData', loginStatusData)
   const avatarUrl = loginStatusData?.data.profile.avatarUrl
 
+  const handleLogout = () => {
+    logout()
+  }
+
   return (
-    <div className="Header flex items-center justify-between">
+    <div className="Header flex items-center justify-between gap-4">
       {/* player */}
       <Player />
 
-      <div className="flex gap-1">
+      <div className="flex gap-4">
         {/* lyric */}
 
         {/* queue */}
         <div onClick={handleQueueClick}>Queue</div>
 
         {/* user */}
-        {avatarUrl ? (
+        {cookie ? (
           <DropDown
             trigger={
               <button className="w-6 h-6 rounded-full">
                 <img className="w-6 h-6 rounded-full" src={avatarUrl} alt="avatar" />
               </button>
             }
-            menu={<div>Menu Content123</div>}
+            menu={
+              <div>
+                <button onClick={handleLogout}>Logout</button>
+              </div>
+            }
           />
         ) : (
           <Login />

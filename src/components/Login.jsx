@@ -1,9 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
 import Dialog from './Dialog'
-import { useQueryClient } from '@tanstack/react-query'
-import { captchaSent, loginCellphone, useLoginStatus } from '../hooks/useAuth'
+import { captchaSent, loginCellphone } from '../hooks/useAuth'
 import { loginQrCheck, loginQrCreate, loginQrKey } from '../hooks/useAuth'
-import QRCode from 'react-qr-code'
+// import QRCode from 'react-qr-code'
 import useUserStore from '../stores/user'
 
 const Comp = () => {
@@ -14,7 +13,6 @@ const Comp = () => {
   const [key, setKey] = useState('')
   const [qrImg, setQrImg] = useState('')
   const [status, setStatus] = useState('')
-  const { data: loginStatusData } = useLoginStatus()
   const setCookie = useUserStore(state => state.setCookie)
   const [isQrCodeLogin, setIsQrCodeLogin] = useState(true)
 
@@ -30,12 +28,16 @@ const Comp = () => {
   }
 
   useEffect(() => {
-    if (isLoginOpen && isQrCodeLogin) {
-      initQr()
-    }
-    if (isLoginOpen && !isQrCodeLogin) {
+    if (isLoginOpen) {
+      if (isQrCodeLogin) {
+        initQr()
+      } else {
+        setKey('')
+      }
+    } else {
       setKey('')
       setQrImg('')
+      setStatus('')
     }
   }, [isLoginOpen, isQrCodeLogin])
 
@@ -61,6 +63,7 @@ const Comp = () => {
       // }
 
       if (code === 803) {
+        alert(message)
         console.log(cookie)
 
         setCookie(cookie)
@@ -76,10 +79,7 @@ const Comp = () => {
   const handleGetCaptcha = async () => {
     if (!cellphone) return
     const isSent = await captchaSent({ phone: cellphone })
-    if (!isSent) {
-      alert('验证码发送失败')
-      return
-    }
+    alert('Captcha sent')
     setCountdown(60)
     const interval = setInterval(() => {
       setCountdown(prev => {
@@ -92,8 +92,8 @@ const Comp = () => {
     }, 1000)
   }
   const handleLogin = async e => {
-    if (!cellphone || !captcha) return
     e.preventDefault()
+    if (!cellphone || !captcha) return
     const res = await loginCellphone({ phone: cellphone, captcha })
     console.log('console: res', res)
     if (res.code !== 200) {
@@ -111,7 +111,7 @@ const Comp = () => {
         <div>
           <h2>Login</h2>
           {!isQrCodeLogin ? (
-            <form action="">
+            <form onSubmit={handleLogin}>
               <div>
                 <input
                   type="text"
@@ -127,16 +127,16 @@ const Comp = () => {
                   value={captcha}
                   onChange={e => setCaptcha(e.target.value)}
                 />
-                <button onClick={handleGetCaptcha} disabled={countdown > 0}>
+                <button type="button" onClick={handleGetCaptcha} disabled={countdown > 0}>
                   {countdown > 0 ? `${countdown}s` : 'Get Captcha'}
                 </button>
               </div>
-              <button onClick={handleLogin}>Submit</button>
+              <button type="submit">Submit</button>
             </form>
           ) : (
             <div>
               {/* {qrUrl && <QRCode value={qrUrl} size={220} />} */}
-              {qrImg && <img src={qrImg} alt="二维码" width={220} height={220} />}
+              {qrImg && <img src={qrImg} alt="qrcode" width={220} height={220} />}
 
               <div>{status}</div>
               {/* <div>{JSON.stringify(loginStatusData)}</div> */}
