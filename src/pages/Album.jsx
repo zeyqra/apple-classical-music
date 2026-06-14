@@ -1,7 +1,7 @@
 import { useParams } from 'react-router-dom'
-import { useAlbum } from '../hooks/useMusic'
+import { useAlbum } from '../services/music'
 import { msToHms } from '../utils'
-import useMusicStore from '../stores/useMusicStore'
+import useMusicStore from '../stores/music'
 
 const Album = () => {
   const { id } = useParams()

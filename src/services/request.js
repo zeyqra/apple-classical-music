@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { logout } from './auth'
+import { logout } from './user'
 
 const service = axios.create({
   baseURL: '/api',

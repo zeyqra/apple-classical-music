@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
-import useMusicStore from '../stores/useMusicStore'
-import { useSongUrlV1 } from '../hooks/useMusic'
+import useMusicStore from '../stores/music'
+import { useSongUrlV1 } from '../services/music'
 import { usePlayNextPrev } from '../hooks/useMusic'
 
 const Player = () => {

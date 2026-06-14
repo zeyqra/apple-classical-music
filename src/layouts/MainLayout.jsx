@@ -1,5 +1,5 @@
 import { Outlet } from 'react-router-dom'
-import useAppStore from '../stores/useAppStore'
+import useAppStore from '../stores/app'
 
 const MainLayout = ({ header, menubar, sidebar }) => {
   const isSbOpen = useAppStore(state => state.isSbOpen)

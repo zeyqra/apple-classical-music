@@ -1,11 +1,11 @@
 import { useEffect, useRef, useState } from 'react'
-import useAppStore from '../stores/useAppStore'
+import useAppStore from '../stores/app'
 import Login from './Login'
 import Player from './Player'
-import { useLoginStatus } from '../hooks/useAuth'
+import { useLoginStatus } from '../services/user'
 import DropDown from './DropDown'
 import useUserStore from '../stores/user'
-import { logout } from '../utils'
+import { logout } from '../services/user'
 
 const Header = () => {
   const setIsSbOpen = useAppStore(state => state.setIsSbOpen)

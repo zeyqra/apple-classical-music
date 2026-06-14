@@ -1,7 +1,12 @@
 import { useEffect, useRef, useState } from 'react'
 import Dialog from './Dialog'
-import { captchaSent, loginCellphone } from '../hooks/useAuth'
-import { loginQrCheck, loginQrCreate, loginQrKey } from '../hooks/useAuth'
+import {
+  captchaSent,
+  loginCellphone,
+  loginQrCheck,
+  loginQrCreate,
+  loginQrKey,
+} from '../services/user'
 // import QRCode from 'react-qr-code'
 import useUserStore from '../stores/user'
 

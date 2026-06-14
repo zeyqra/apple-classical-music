@@ -5,14 +5,12 @@ import Home from '../pages/Home'
 import Menubar from '../components/Menubar'
 import SideBar from '../components/Sidebar'
 import Header from '../components/Header'
-import { requireAuth } from '../utils/auth'
 import Album from '../pages/Album'
 
 const router = createBrowserRouter([
   {
     path: '/',
     element: <MainLayout header={<Header />} menubar={<Menubar />} sidebar={<SideBar />} />,
-    // loader: requireAuth,
     children: [
       {
         index: true,

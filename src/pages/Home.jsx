@@ -1,4 +1,4 @@
-import { useAlbumNew } from '../hooks/useMusic'
+import { useAlbumNew } from '../services/music'
 import BannerList from '../components/BannnerList'
 import { useNavigate } from 'react-router-dom'
 const Home = () => {

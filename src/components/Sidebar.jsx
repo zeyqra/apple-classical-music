@@ -1,5 +1,5 @@
-import useAppStore from '../stores/useAppStore'
-import useMusicStore from '../stores/useMusicStore'
+import useAppStore from '../stores/app'
+import useMusicStore from '../stores/music'
 
 const SideBar = () => {
   const sbType = useAppStore(state => state.sbType)
