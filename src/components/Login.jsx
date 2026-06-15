@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import Dialog from './Dialog'
+import Dialog from '../libs/Dialog'
 import {
   captchaSent,
   loginCellphone,

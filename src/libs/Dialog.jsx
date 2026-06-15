@@ -2,7 +2,7 @@ const Dialog = ({ isOpen, onClose, children }) => {
   if (!isOpen) return null
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center">
-      <div className="bg-white dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 p-2 relative">
+      <div className="bg-white dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800   p-2 relative flex flex-col items-center">
         <button className="absolute top-2 right-2" onClick={onClose}>
           Close
         </button>

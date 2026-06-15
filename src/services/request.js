@@ -34,7 +34,8 @@ service.interceptors.response.use(
   res => res.data,
   async error => {
     if (error.response?.status === 401) logout()
-    alert(error.response?.data?.code + ': ' + error.response?.data?.message)
+    if (error.response?.data?.code)
+      alert(error.response?.data?.code + ': ' + error.response?.data?.message)
     return Promise.reject(error)
   }
 )

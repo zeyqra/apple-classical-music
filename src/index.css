@@ -1,2 +1,8 @@
 @import 'tailwindcss';
 @custom-variant dark (&:where(.dark, .dark *));
+
+* {
+  line-height: 1.2;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 500;
+}
