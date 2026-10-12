@@ -25,8 +25,8 @@ const SongInfo = ({ song, className, isFullPlayer }) => {
   }
   const navigate = useNavigate()
   return (
-    <div className={`relative w-full pt-1 ${className || ''}`}>
-      <div className="">
+    <div className={`relative ${className || ''}`}>
+      <div>
         <div className="relative font-bold whitespace-nowrap text-ellipsis ">
           <div className="font-bold">{name}</div>
           <div

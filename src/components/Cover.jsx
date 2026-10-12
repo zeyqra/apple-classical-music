@@ -4,11 +4,7 @@ import ImgLazy from './ImgLazy'
 const Cover = ({ song }) => {
   return (
     <div className="w-full h-full flex items-center justify-center ">
-      {song.id ? (
-        <ImgLazy className="w-full h-full" src={song.alPicUrl} alt="song cover" />
-      ) : (
-        <Music />
-      )}
+      {song.id ? <ImgLazy src={song.alPicUrl} /> : 'COVER'}
     </div>
   )
 }
