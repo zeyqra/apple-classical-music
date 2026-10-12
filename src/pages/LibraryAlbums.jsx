@@ -1,31 +1,39 @@
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { useAlbumSublist } from '../services/music'
-import {  useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
+import InfiniteAlbums from '../components/InfiniteAlbums'
+import Loading from '../libs/Loading'
+import ImgLazy from '../components/ImgLazy'
 
 const LibraryAlbums = () => {
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useAlbumSublist()
-  // console.log('console: list', list)
-  const albums = data?.pages.flatMap(page => page.data) ?? []
-  
-  console.log('console: albums', albums)
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } = useAlbumSublist({
+    limit: 10,
+  })
+  const albums = data?.pages.flatMap(page => page.data ?? []) ?? []
+  console.log('console: data', albums)
+
   const navigate = useNavigate()
-  const handleAlbumClick = id => {
-    navigate(`/album/${id}`)
-  }
+  const handleAlbumClick = id => navigate(`/album/${id}`)
 
-
+  if (isLoading) return <Loading />
   return (
-    // <div className="grid grid-cols-[repeat(auto-fill,minmax(180px,1fr))] gap-2">
-    <div>
-      {albums.length > 0 &&
-        albums.map(({ picUrl, name, id, artists }) => (
-          <div onClick={() => handleAlbumClick(id)} key={id}>
-            {/* <img src={picUrl} alt={name} /> */}
-            <div className="max-h-10 overflow-hidden text-ellipsis">{name}</div>
-            {/* <div className="max-h-10 overflow-hidden text-ellipsis">{artists.map(a => a.name).join('/')}</div> */}
-          </div>
-        ))}
-    </div>
+    <InfiniteAlbums
+      list={albums}
+      fetchNextPage={fetchNextPage}
+      hasNextPage={hasNextPage}
+      isFetchingNextPage={isFetchingNextPage}
+      renderItem={({ picUrl, name, id, artists }) => (
+        <div onClick={() => handleAlbumClick(id)} key={id}>
+          <ImgLazy
+            className="aspect-square w-full object-cover"
+            src={`${picUrl}?param=300y300`}
+            alt={name}
+          />
+          <div className="line-clamp-2 wrap-break-word">{name}</div>
+          <div className="line-clamp-2 wrap-break-word">{artists.map(a => a.name).join('/')}</div>
+        </div>
+      )}
+    />
   )
 }
 

@@ -7,6 +7,14 @@ import SideBar from '../components/Sidebar'
 import Header from '../components/Header'
 import Album from '../pages/Album'
 import LibraryAlbums from '../pages/LibraryAlbums'
+import Search from '../pages/Search'
+import RecentAlbums from '../pages/RecentAlbums'
+import NewAlbums from '../pages/NewAlbums'
+import TopList from '../pages/TopList'
+import Playlist from '../pages/Playlist'
+import SearchAlbums from '../pages/SearchAlbums'
+import SearchSongs from '../pages/SearchSongs'
+import SearchArtists from '../pages/SearchArtists'
 
 const router = createBrowserRouter([
   {
@@ -18,12 +26,44 @@ const router = createBrowserRouter([
         element: <Home />,
       },
       {
+        path: 'recent-albums',
+        element: <RecentAlbums />,
+      },
+      {
+        path: 'new-albums',
+        element: <NewAlbums />,
+      },
+      {
+        path: 'toplist',
+        element: <TopList />,
+      },
+      {
         path: 'album/:id',
         element: <Album />,
       },
       {
         path: 'library/albums',
         element: <LibraryAlbums />,
+      },
+      {
+        path: 'playlist/:id',
+        element: <Playlist />,
+      },
+      {
+        path: 'search',
+        element: <Search />,
+      },
+      {
+        path: 'search/albums',
+        element: <SearchAlbums />,
+      },
+      {
+        path: 'search/songs',
+        element: <SearchSongs />,
+      },
+      {
+        path: 'search/artists',
+        element: <SearchArtists />,
       },
     ],
   },

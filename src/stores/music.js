@@ -11,7 +11,7 @@ const useMusicStore = create((set, get) => ({
   playlist: [],
   isPlay: false,
   index: 0,
-  mode: 'list',
+  mode: 'listLoop',
   sameIndexAndIdButReStart: 0,
   playAlbum: (queue, index = 0) => {
     const state = get()
@@ -33,6 +33,16 @@ const useMusicStore = create((set, get) => ({
   setPlaylist: playlist => set(() => ({ playlist })),
   setIsPlay: isPlay => set(() => ({ isPlay })),
   setMode: mode => set(() => ({ mode })),
+  ct: 0,
+  setCt: ct => set(() => ({ ct })),
+  dt: null,
+  setDt: dt => set(() => ({ dt })),
+  vol: 0.5,
+  setVol: vol => set(() => ({ vol })),
+  isSeeking: false,
+  setIsSeeking: isSeeking => set(() => ({ isSeeking })),
+  seekCt: 0,
+  setSeekCt: seekCt => set(() => ({ seekCt })),
 }))
 
 export default useMusicStore

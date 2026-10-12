@@ -3,7 +3,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 export const createOptimisticMutation = ({
   getQueryKey,
   mutationFn,
-  updateFn, // onMutate: queryClient.setQueryData
+  onMutateUpdateFn,
   onMutateExtra,
   onSuccessExtra,
   invalidate = false,
@@ -14,14 +14,11 @@ export const createOptimisticMutation = ({
       mutationFn,
       onMutate: async variables => {
         const queryKey = getQueryKey(variables)
-
         await queryClient.cancelQueries(queryKey)
-
         const previousData = queryClient.getQueryData(queryKey)
 
-        queryClient.setQueryData(queryKey, oldData => updateFn(oldData, variables))
+        queryClient.setQueryData(queryKey, oldData => onMutateUpdateFn(oldData, variables))
 
-        // 额外逻辑（比如删除 reminders / zustand）
         onMutateExtra?.(variables, queryClient)
 
         return { previousData, queryKey }

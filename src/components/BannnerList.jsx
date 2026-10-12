@@ -1,4 +1,5 @@
 import { useRef } from 'react'
+import ImgLazy from './ImgLazy'
 
 const BannerList = ({ title, useQuery, useQueryParams, onItemClick }) => {
   const { data, isLoading, error } = useQuery(useQueryParams)
@@ -26,7 +27,7 @@ const BannerList = ({ title, useQuery, useQueryParams, onItemClick }) => {
               className="shrink-0"
               key={album.id}
               onClick={() => onItemClick(album)}>
-              <img src={album.blurPicUrl} alt={album.name} />
+              <ImgLazy src={album.blurPicUrl} alt={album.name} />
               {album.name}
               {album.artist.name}
             </div>

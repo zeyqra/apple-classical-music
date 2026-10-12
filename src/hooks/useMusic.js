@@ -14,8 +14,12 @@ export function usePlayNextPrev() {
       const total = queue.length
       const newIndex = index + delta
 
+      console.log('console:usePlayNextPrev mode', mode)
       // 单曲循环：index 不变
-      if (mode === 'singleLoop') return 'restart'
+      if (mode === 'singleLoop') {
+        console.log('console: usePlayNextPrev return restart')
+        return 'restart'
+      }
 
       // 顺序播放
       if (mode === 'list') {

@@ -1,38 +1,21 @@
 import useAppStore from '../stores/app'
 import useMusicStore from '../stores/music'
+import Queue from './Queue'
+import Lyric from './Lyric'
 
 const SideBar = () => {
   const sbType = useAppStore(state => state.sbType)
   const queue = useMusicStore(state => state.queue) // 默认 []
   const index = useMusicStore(state => state.index) // 默认 0
-
+  console.log('console: queue', queue)
   let content = null
   if (sbType === 'queue') {
-    content = (
-      <div>
-        <h2>Queue</h2>
-        <div>
-          {queue.slice(index + 1).map(song => (
-            <div key={song.id} className="text-sm flex items-center gap-1">
-              <img className="w-8 h-8" src={song.alPicUrl} alt="song cover" />
-              <div className="w-[calc(280px-36px)]">
-                <div className="w-full whitespace-nowrap overflow-hidden text-ellipsis">
-                  {song.name}
-                </div>
-                <div className="w-full whitespace-nowrap overflow-hidden text-ellipsis">
-                  {song.artists}
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    )
+    content = <Queue></Queue>
   } else if (sbType === 'lyric') {
-    content = <div>歌词</div>
+    content = <Lyric></Lyric>
   }
 
-  return <div>{content}</div>
+  return <div className="h-full w-full">{content}</div>
 }
 
 export default SideBar
