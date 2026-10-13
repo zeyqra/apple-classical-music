@@ -26,7 +26,6 @@ const Header = () => {
   const showFullPlayer = useAppStore(state => state.showFullPlayer)
   const setShowFullPlayer = useAppStore(state => state.setShowFullPlayer)
   const handleCoverClick = () => {
-    console.log('console: click')
     setShowFullPlayer(true)
   }
   const { data: listList = new Set() } = useLikeList()

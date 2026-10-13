@@ -81,35 +81,28 @@ const Search = () => {
   return (
     <div className="relative" ref={searchRef}>
       <input
-        className="w-full border-2 border-zinc-300 p-1 block"
+        className="w-full border-2"
         onFocus={handleFocus}
         onKeyDown={handleKeydown}
-        placeholder="Search"
+        placeholder="搜索"
         type="text"
         value={searchText}
         onChange={handleChange}
         // onBlur={() => setShowSug(false)}
       />
       {showSug && (
-        <div className="absolute top-full left-0 w-full bg-white border border-zinc-300 text-zinc-600 max-h-[calc(100vh-3rem)] overflow-y-auto overscroll-contain">
+        <div className="absolute top-full left-0 w-full bg-white border max-h-[calc(100vh-3rem)] overflow-y-auto overscroll-contain">
           <div>
             {sugsKeyword?.map(sug => (
-              <div
-                key={sug.keyword}
-                onClick={() => handleSugClick(sug.keyword)}
-                className="p-1 hover:bg-zinc-100 cursor-pointer">
+              <div key={sug.keyword} onClick={() => handleSugClick(sug.keyword)}>
                 {sug.keyword}
               </div>
             ))}
           </div>
           <div>
             {sugsAl?.map(({ id, name, artist }) => {
-              console.log('console: artist', artist)
               return (
-                <div
-                  key={id}
-                  onClick={() => handleSugAlSoClick({ id, name, artist }, 'album')}
-                  className="p-1 hover:bg-zinc-100 cursor-pointer">
+                <div key={id} onClick={() => handleSugAlSoClick({ id, name, artist }, 'album')}>
                   <div>{name}</div>
                   <div>专辑 · {artist.name}</div>
                 </div>
@@ -122,8 +115,7 @@ const Search = () => {
                 key={id}
                 onClick={() =>
                   handleSugAlSoClick({ id, name, artists, album: { id: albumId } }, 'song')
-                }
-                className="p-1 hover:bg-zinc-100 cursor-pointer">
+                }>
                 <div>{name}</div>
                 <div>歌曲 · {artists.map(a => a.name).join('/')}</div>
               </div>
@@ -131,10 +123,7 @@ const Search = () => {
           </div>
           <div>
             {sugsAr?.map(({ id, name }) => (
-              <div
-                key={id}
-                onClick={() => handleSugAlSoClick({ id, name }, 'artist')}
-                className="p-1 hover:bg-zinc-100 cursor-pointer">
+              <div key={id} onClick={() => handleSugAlSoClick({ id, name }, 'artist')}>
                 <div>{name}</div>
                 <div>Artist</div>
               </div>

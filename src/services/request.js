@@ -1,43 +1,37 @@
-import axios from 'axios'
-import { logout } from './user'
+import { logout } from '../services/user'
 
-const service = axios.create({
-  baseURL: '/api',
-  timeout: 5000,
-})
+const BASE_URL = '/api'
 
-service.interceptors.request.use(config => {
+export const request = async (path, { payload, method = 'GET', headers = {}, signal }) => {
   const cookie = localStorage.getItem('cookie')
   if (cookie) {
-    if (config.method === 'get') {
-      config.params = {
-        ...config.params,
-        cookie,
-      }
+    path += '&cookie=' + cookie
+    payload = { ...payload, cookie }
+  }
+
+  const response = await fetch(BASE_URL + path, {
+    method,
+    headers: {
+      ...(payload ?? { 'Content-Type': 'application/json;charset=UTF-8' }),
+      ...headers,
+    },
+    ...(payload ?? { body: JSON.stringify(payload) }),
+    signal,
+  })
+
+  if (!response.ok) {
+    if (response.status === 401) {
+      logout()
     }
-    if (config.method === 'post') {
-      config.data = {
-        ...config.data,
-        cookie,
-      }
-    }
+
+    throw new Error('HTTP ' + response.status)
   }
 
-  if (config.method === 'post') {
-    config.url += `${config.url.includes('?') ? '&' : '?'}timestamp=${Date.now()}`
-  }
+  if (response.status === 204) return null
 
-  return config
-})
+  return await response.json()
+}
 
-service.interceptors.response.use(
-  res => res.data,
-  async error => {
-    if (error.response?.status === 401) logout()
-    if (error.response?.data?.code)
-      alert(error.response?.data?.code + ': ' + error.response?.data?.message)
-    return Promise.reject(error)
-  }
-)
-
-export default service
+export const get = (path, options) => request(path, options)
+export const post = (path, payload, options) =>
+  request(path, { ...options, payload, method: 'POST' })
