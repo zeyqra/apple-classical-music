@@ -1,21 +1,13 @@
 import { NavLink } from 'react-router-dom'
 import Search from './Search'
 import InfiniteLoading from './InfiniteLoading'
-import { useUserPlaylistCreate } from '../services/music'
-import { useRequest } from '../hooks/useRequest'
+import { userPlaylistCreate2, useUserPlaylistCreate } from '../services/music'
+import { useQuery } from '../hooks/useQuery'
 
 const Menubar = () => {
-  const { result, isLoading, error } = useRequest({
-    path: '/user/playlist/create' + '?uid=1645212553',
-  })
-  console.log('console: ', result)
-  // const {
-  //   data: listData,
-  //   fetchNextPage,
-  //   hasNextPage,
-  //   isFetchingNextPage,
-  // } = useUserPlaylistCreate({ offset: 0, limit: 20 })
-  const list = []
+  const { result, isLoading, error } = useQuery(userPlaylistCreate2)
+  // console.log('console: ', result)
+  const list = result?.data?.playlist || []
   return (
     <div className="flex flex-col h-full">
       {/* logo + 搜索栏 */}

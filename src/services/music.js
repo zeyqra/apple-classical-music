@@ -1,5 +1,6 @@
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import request from './request1'
+import { request as req } from './request'
 import { createOptimisticMutation } from './helper'
 import { useLoginStatus } from './user'
 import useUserStore from '../stores/user'
@@ -333,3 +334,10 @@ export const useSearchHot = () =>
     queryKey: ['searchHot'],
     queryFn: () => searchHot(),
   })
+
+export const userPlaylistCreate2 = (params, options) => {
+  return req('/user/playlist/create' + '?uid=1645212553', {
+    params,
+    ...options,
+  })
+}

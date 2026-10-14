@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
-import { request } from '../services/request'
 
-export const useRequest = ({ path, payload, options }) => {
+export const useQuery = (queryFn, params) => {
   const [result, setResult] = useState(null)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState(null)
@@ -14,17 +13,14 @@ export const useRequest = ({ path, payload, options }) => {
       setError(null)
 
       try {
-        const result = await request(path, {
-          ...(options || {}),
-          payload,
-          signal: controller.signal,
-        })
+        const result = await queryFn(params, { signal: controller.signal })
 
         setResult(result)
       } catch (error) {
         // !response.ok 时
         if (error.name === 'AbortError') return
         setError(error)
+        console.error(error)
       } finally {
         setIsLoading(false)
       }
@@ -33,7 +29,7 @@ export const useRequest = ({ path, payload, options }) => {
     fetchData()
 
     return () => controller.abort()
-  }, [path, payload, options])
+  }, [queryFn, params])
 
   return { result, isLoading, error }
 }
