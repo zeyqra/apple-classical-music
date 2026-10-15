@@ -1,6 +1,5 @@
 import { NavLink } from 'react-router-dom'
 import Search from './Search'
-import InfiniteLoading from './InfiniteLoading'
 import { userPlaylistCreate2, useUserPlaylistCreate } from '../services/music'
 import { useQuery } from '../hooks/useQuery'
 
@@ -12,7 +11,7 @@ const Menubar = () => {
     <div className="flex flex-col h-full">
       {/* logo + 搜索栏 */}
       <div className="sticky top-0">
-        <h1>React Mini Music</h1>
+        <h1>Apple Classical Music</h1>
         <Search />
       </div>
       <div className="overflow-y-auto">
@@ -39,11 +38,6 @@ const Menubar = () => {
               </NavLink>
             </div>
           ))}
-          {/* <InfiniteLoading
-            list={list}
-            fetchNextPage={fetchNextPage}
-            hasNextPage={hasNextPage}
-            isFetchingNextPage={isFetchingNextPage}></InfiniteLoading> */}
         </div>
       </div>
     </div>

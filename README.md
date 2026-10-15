@@ -16,3 +16,40 @@ Note: This will impact Vite dev & build performances.
 ## Expanding the ESLint configuration
 
 If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+
+## 开发记录
+- 先从最核心的原型开始：
+  - 专辑列表
+  - 专辑详情
+  - 播放器相关（播放控制、列队管理）
+
+- 基础模型
+  - 古典乐所有的播放单位都对应到 movement
+
+/albums
+id: 1
+title: "Beethoven: Symphonies Nos. 5 & 6"
+
+/album/:id
+id(以下数据结构省略 id)
+title
+recordings[]:
+  work:
+    composer:
+      name
+    title
+    movements[]:
+      title
+  performers:
+    conductor:
+      name
+    orchestra:
+      name
+    soloist:
+      name
+    singer:
+      name
+    
+
+音频文件（分轨）:
+/audio/:movement_id
