@@ -26,6 +26,28 @@ If you are developing a production application, we recommend using TypeScript wi
 - 基础模型
   - 古典乐所有的播放单位都对应到 movement
 
+数据库建模
+album
+id | title
+
+recording
+id | work_id
+
+recording_ablum
+recording_id | ablum_id | (recording_id, album_id)
+
+recording_performer
+recording_id | performer_id | role | (recording_id, performer_id, role)
+
+rmovement
+id | recording_id | title
+
+work
+id | composer_id
+
+composer
+id | name
+
 /albums
 id: 1
 title: "Beethoven: Symphonies Nos. 5 & 6"
@@ -52,4 +74,6 @@ recordings[]:
     
 
 音频文件（分轨）:
-/audio/:movement_id
+/rmovement/:rmovement_id/audio
+
+后端先采用 Node.js + Express + SQLite（better-sqlite3），不引入 ORM，先搭出最小可用架构。
