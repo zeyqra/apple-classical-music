@@ -341,3 +341,10 @@ export const userPlaylistCreate2 = (params, options) => {
     ...options,
   })
 }
+
+export const albums = (params, options) => {
+  return req('/albums', {
+    params,
+    ...options,
+  })
+}

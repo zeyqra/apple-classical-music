@@ -39,11 +39,14 @@ recording_id | ablum_id | (recording_id, album_id)
 recording_performer
 recording_id | performer_id | role | (recording_id, performer_id, role)
 
+performer
+id | name
+
 rmovement
 id | recording_id | title
 
 work
-id | composer_id
+id | composer_id | title
 
 composer
 id | name
