@@ -348,3 +348,10 @@ export const albums = (params, options) => {
     ...options,
   })
 }
+
+export const album = (params, options) => {
+  return req(`/albums/${params.id}`, {
+    params,
+    ...options,
+  })
+}
