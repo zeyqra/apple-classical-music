@@ -10,9 +10,11 @@ export const PlayerProvider = ({ children }) => {
   const queue = useMusicStore(state => state.queue) // 默认 []
   const index = useMusicStore(state => state.index) // 默认 null
   const song = queue[index] || {}
+  // const url = song ? `/media/${song.id}.flac` : null
   const id = song?.id
   const { data: urlData = {} } = useSongUrlV1({ id, level: 'lossless' })
   const url = urlData.data?.[0]?.url // undefined
+  console.log('console: id url', id, url)
   const isPlay = useMusicStore(state => state.isPlay)
   const setIsPlay = useMusicStore(state => state.setIsPlay)
   const dt = useMusicStore(state => state.dt)

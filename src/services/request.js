@@ -4,12 +4,12 @@ const BASE_URL = '/api'
 
 export const request = async (path, { payload, method = 'GET', headers = {}, signal }) => {
   const url = new URL(BASE_URL + path, window.location.origin)
-  const cookie = localStorage.getItem('cookie')
-  if (cookie) {
-    url.searchParams.append('cookie', cookie)
-    payload = { ...payload, cookie }
-  }
-  console.log('console: ', url)
+  // const cookie = localStorage.getItem('cookie')
+  // if (cookie) {
+  //   url.searchParams.append('cookie', cookie)
+  //   payload = { ...payload, cookie }
+  // }
+  // console.log('console: ', url)
 
   const response = await fetch(url, {
     method,

@@ -7,21 +7,21 @@ const service = axios.create({
 })
 
 service.interceptors.request.use(config => {
-  const cookie = localStorage.getItem('cookie')
-  if (cookie) {
-    if (config.method === 'get') {
-      config.params = {
-        ...config.params,
-        cookie,
-      }
-    }
-    if (config.method === 'post') {
-      config.data = {
-        ...config.data,
-        cookie,
-      }
-    }
-  }
+  // const cookie = localStorage.getItem('cookie')
+  // if (cookie) {
+  //   if (config.method === 'get') {
+  //     config.params = {
+  //       ...config.params,
+  //       cookie,
+  //     }
+  //   }
+  //   if (config.method === 'post') {
+  //     config.data = {
+  //       ...config.data,
+  //       cookie,
+  //     }
+  //   }
+  // }
 
   if (config.method === 'post') {
     config.url += `${config.url.includes('?') ? '&' : '?'}timestamp=${Date.now()}`

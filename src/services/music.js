@@ -355,3 +355,10 @@ export const album = (params, options) => {
     ...options,
   })
 }
+
+// export const media = (params, options) => {
+//   return req(`/media/${params.id}.flac`, {
+//     params,
+//     ...options,
+//   })
+// }
