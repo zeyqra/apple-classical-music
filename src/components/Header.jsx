@@ -22,7 +22,8 @@ import { addSongToQueue } from '../utils'
 import { useNavigate } from 'react-router-dom'
 
 const Header = () => {
-  const { controller, song, progress, volumn } = usePlayer()
+  const { controller, track: song, progress, volumn } = usePlayer()
+  console.log('console: header', song)
   const showFullPlayer = useAppStore(state => state.showFullPlayer)
   const setShowFullPlayer = useAppStore(state => state.setShowFullPlayer)
   const handleCoverClick = () => {
@@ -79,12 +80,19 @@ const Header = () => {
         </div>
 
         <div className={`flex-1 flex flex-col text-xs`}>
-          {song.id ? (
+          {song ? (
             <>
               {/* 音乐标题、艺术家、收藏按钮等 */}
               <div className="relative flex flex-col items-center whitespace-nowrap text-ellipsis">
-                <div>{song.name}</div>
-                <div>{song.artists}</div>
+                <div>
+                  {song.work_title} - {song.title}
+                </div>
+                <div>
+                  {Object.entries(song.performers)
+                    .filter(([_, pfs]) => pfs.length >= 1)
+                    .map(([role, pfs]) => pfs.map(pf => pf.name).join(' / '))
+                    .join(' / ')}
+                </div>
                 {/* 收藏按钮、菜单 */}
                 <div className="absolute top-0 right-0 flex gap-1">
                   {/* 收藏 */}
@@ -112,7 +120,8 @@ const Header = () => {
             </>
           ) : (
             <div className="w-full h-full flex items-center justify-center">
-              APPLE CLASSICAL MUSIC
+              {/* APPLE CLASSICAL MUSIC */}
+              {JSON.stringify(song)}
             </div>
           )}
         </div>

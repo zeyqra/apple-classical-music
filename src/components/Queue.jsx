@@ -10,10 +10,81 @@ const Queue = () => {
   const handleRemove = remveIndex => {
     setQueue(queue.filter((_, i) => i !== remveIndex))
   }
+
+  const tracks = queue.slice(index + 1)
+  const tracksGrouped = []
+  const group = []
+  for (let i = 0; i <= tracks.length; i++) {
+    const { recording_id } = tracks[i] || {}
+    if (i >= 1 && recording_id !== tracks[i - 1]?.recording_id) {
+      const {
+        id,
+        title,
+        recording_id,
+        album_id,
+        album_title,
+        track_number,
+        composer_id,
+        composer_name,
+        work_id,
+        work_title,
+        performers,
+        // conductor,
+        // orchestra,
+        // soloist,
+        // singer,
+      } = tracks[i - 1]
+      tracksGrouped.push({
+        recording: {
+          id: recording_id,
+          composer_id,
+          composer_name,
+          work_id,
+          work_title,
+          performers,
+          // conductor,
+          // orchestra,
+          // soloist,
+          // singer,
+        },
+        tracks: [...group],
+      })
+      group.length = 0
+    }
+    group.push(tracks[i])
+  }
   return (
     <div className="h-full flex flex-col">
       <h2 className="font-bold sticky top-0 bg-white p-1 shrink-0">Queue</h2>
-      <div className="h-full space-y-0.5 p-1 overflow-y-auto flex-1">
+      <div>
+        {tracksGrouped.map(({ recording, tracks }) => {
+          return (
+            // 录音组
+            <div>
+              {/* 录音标题 */}
+              <div>
+                <div>
+                  <p>{recording.composer_name}</p>
+                  <p>{recording.work_title}</p>
+                </div>
+                <p>
+                  {Object.entries(recording.performers)
+                    .filter(([_, pfs]) => pfs.length >= 1)
+                    .map(([role, pfs]) => pfs.map(pf => pf.name).join(' / '))
+                    .join(' / ')}
+                </p>
+              </div>
+              {/* 录音乐章 */}
+              <div>
+                {tracks.map(track => (
+                  <p>{track.title}</p>
+                ))}
+              </div>
+            </div>
+          )
+        })}
+      </div>
+      {/* <div className="h-full space-y-0.5 p-1 overflow-y-auto flex-1">
         {queue.slice(index + 1).map((song, restIndex) => (
           <div
             key={song.id + ' ' + restIndex}
@@ -30,7 +101,7 @@ const Queue = () => {
             </button>
           </div>
         ))}
-      </div>
+      </div> */}
     </div>
   )
 }

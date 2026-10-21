@@ -14,15 +14,15 @@ const useMusicStore = create((set, get) => ({
   mode: 'listLoop',
   sameIndexAndIdButReStart: 0,
   playAlbum: (queue, index = 0) => {
-    const state = get()
-    const oldIndex = state.index
-    const oldId = state.queue[oldIndex]?.id
-    const newId = queue[index]?.id
+    // const state = get()
     // 点击专辑或歌曲播放后，仍有可能 index、id不变
-    if (oldId === newId && oldIndex === index) {
-      set(state => ({ sameIndexAndIdButReStart: state.sameIndexAndIdButReStart + 1 }))
-      return
-    }
+    // const oldIndex = state.index
+    // const oldId = state.queue[oldIndex]?.id
+    // const newId = queue[index]?.id
+    // if (oldId === newId && oldIndex === index) {
+    //   set(state => ({ sameIndexAndIdButReStart: state.sameIndexAndIdButReStart + 1 }))
+    //   return
+    // }
     set(() => ({
       queue,
       index,
