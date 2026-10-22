@@ -3,7 +3,7 @@ import { useAlbumSublist } from '../services/music'
 import { useNavigate } from 'react-router-dom'
 import InfiniteAlbums from '../components/InfiniteAlbums'
 import Loading from '../libs/Loading'
-import ImgLazy from '../components/ImgLazy'
+import Image from '../components/Image'
 
 const LibraryAlbums = () => {
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } = useAlbumSublist({
@@ -24,7 +24,7 @@ const LibraryAlbums = () => {
       isFetchingNextPage={isFetchingNextPage}
       renderItem={({ picUrl, name, id, artists }) => (
         <div onClick={() => handleAlbumClick(id)} key={id}>
-          <ImgLazy
+          <Image
             className="aspect-square w-full object-cover"
             src={`${picUrl}?param=300y300`}
             alt={name}

@@ -6,7 +6,7 @@ import DropDown from '../libs/Dropdown'
 import useUserStore from '../stores/user'
 import { logout } from '../services/user'
 import { ListMusic, MessageSquareQuote } from 'lucide-react'
-import ImgLazy from './ImgLazy'
+import Image from './Image'
 import ProgressBar from './ProgressBar'
 import VolBar from './VolBar'
 import { usePlayer } from '../context/player'
@@ -22,27 +22,25 @@ import { addSongToQueue } from '../utils'
 import { useNavigate } from 'react-router-dom'
 
 const Header = () => {
-  const { controller, track: song, progress, volumn } = usePlayer()
-  console.log('console: header', song)
-  const showFullPlayer = useAppStore(state => state.showFullPlayer)
-  const setShowFullPlayer = useAppStore(state => state.setShowFullPlayer)
+  const { controller, track, progress, volumn } = usePlayer()
+  // const setShowFullPlayer = useAppStore(state => state.setShowFullPlayer)
   const handleCoverClick = () => {
-    setShowFullPlayer(true)
+    // setShowFullPlayer(true)
   }
-  const { data: listList = new Set() } = useLikeList()
-  const { mutate: like } = useLike()
-  const handleLikeClick = id => {
-    like({ id, like: !listList.has(id), playlistId: id })
-  }
+  // const { data: listList = new Set() } = useLikeList()
+  // const { mutate: like } = useLike()
+  // const handleLikeClick = id => {
+  //   like({ id, like: !listList.has(id), playlistId: id })
+  // }
   const handlePlayNextLast = delta => {
-    const songToPlay = {
-      id: song.id,
-      name: song.name,
-      dt: song.dt,
-      alPicUrl: (song.al || song.album).picUrl,
-      artists: song.ar.map(artist => artist.name).join('/'),
+    const trackToPlay = {
+      id: track.id,
+      name: track.name,
+      dt: track.dt,
+      alPicUrl: (track.al || track.album).picUrl,
+      artists: track.ar.map(artist => artist.name).join('/'),
     }
-    addSongToQueue(songToPlay, delta)
+    addSongToQueue(trackToPlay, delta)
   }
   const navigate = useNavigate()
 
@@ -75,44 +73,44 @@ const Header = () => {
       {/* 音乐封面、标题、进度条等 */}
       <div className="flex w-[40%]">
         {/* 封面 */}
-        <div className="relative w-12 h-12" onClick={handleCoverClick}>
-          <Cover song={song} />
-        </div>
+        {/* <div className="relative w-10 h-10" onClick={handleCoverClick}>
+          <Cover track={track} />
+        </div> */}
 
         <div className={`flex-1 flex flex-col text-xs`}>
-          {song ? (
+          {track ? (
             <>
               {/* 音乐标题、艺术家、收藏按钮等 */}
               <div className="relative flex flex-col items-center whitespace-nowrap text-ellipsis">
                 <div>
-                  {song.work_title} - {song.title}
+                  {track.work_title} - {track.title}
                 </div>
                 <div>
-                  {Object.entries(song.performers)
+                  {Object.entries(track.performers)
                     .filter(([_, pfs]) => pfs.length >= 1)
                     .map(([role, pfs]) => pfs.map(pf => pf.name).join(' / '))
                     .join(' / ')}
                 </div>
-                {/* 收藏按钮、菜单 */}
+                {/* 收藏按钮、菜单
                 <div className="absolute top-0 right-0 flex gap-1">
-                  {/* 收藏 */}
-                  <button onClick={() => handleLikeClick(song.id)}>
-                    {listList.has(song.id) ? 'STAR' : 'UNSTAR'}
+                  收藏
+                  <button onClick={() => handleLikeClick(track.id)}>
+                    {listList.has(track.id) ? 'STAR' : 'UNSTAR'}
                   </button>
-                  {/* 菜单 */}
+                  菜单
                   <Dropdown
                     trigger={<button>MENU</button>}
                     menu={
                       <div className="bg-white">
-                        <div onClick={() => handleLikeClick(song.id)}>
-                          {listList.has(song.id) ? '取消收藏' : '收藏'}
+                        <div onClick={() => handleLikeClick(track.id)}>
+                          {listList.has(track.id) ? '取消收藏' : '收藏'}
                         </div>
                         <div onClick={() => handlePlayNextLast(1)}>插播</div>
                         <div onClick={() => handlePlayNextLast(-1)}>最后播放</div>
-                        <div onClick={() => navigate(`/album/${song.al.id}`)}>前往专辑</div>
+                        <div onClick={() => navigate(`/album/${track.al.id}`)}>前往专辑</div>
                       </div>
                     }></Dropdown>
-                </div>
+                </div> */}
               </div>
 
               {/* 进度条 */}
@@ -120,8 +118,7 @@ const Header = () => {
             </>
           ) : (
             <div className="w-full h-full flex items-center justify-center">
-              {/* APPLE CLASSICAL MUSIC */}
-              {JSON.stringify(song)}
+              APPLE MUSIC CLASSICAL
             </div>
           )}
         </div>
@@ -141,7 +138,7 @@ const Header = () => {
         <DropDown
           trigger={
             <button className="w-6 h-6">
-              <ImgLazy src={avatarUrl} />
+              <Image src={avatarUrl} />
             </button>
           }
           menu={

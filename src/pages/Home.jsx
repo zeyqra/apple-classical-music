@@ -9,7 +9,7 @@ import {
 import { useNavigate } from 'react-router-dom'
 import HorizenScroll from '../components/HorizenScroll'
 import Loading from '../libs/Loading'
-import ImgLazy from '../components/ImgLazy'
+import Image from '../components/Image'
 const Home = () => {
   console.log('console: home render')
   const { data: bannerData, isLoading: bannerLoading, error: bannerError } = useBanner()
@@ -81,7 +81,7 @@ const Home = () => {
             <div style={style} className="shrink-0 mx-0.5" key={album.id}>
               <div className="mb-1.5">{album.typeTitle}</div>
               <div className="aspect-5/2" onClick={() => handleBannerClick(album.url)}>
-                <ImgLazy
+                <Image
                   className="w-full h-full object-cover"
                   src={`${album.imageUrl}?param=300y300`}
                   alt={album.typeTitle}
@@ -103,7 +103,7 @@ const Home = () => {
             key={album.id}
             onClick={() => navigate(`/album/${album.id}`)}>
             <div>
-              <ImgLazy
+              <Image
                 className="w-full aspect-square object-cover"
                 src={`${album.blurPicUrl}?param=300y300`}
                 alt={album.name}
@@ -128,7 +128,7 @@ const Home = () => {
             key={album.id}
             onClick={() => navigate(`/album/${album.id}`)}>
             <div>
-              <ImgLazy
+              <Image
                 className="w-full aspect-square object-cover"
                 src={`${album.blurPicUrl}?param=300y300`}
                 alt={album.name}
@@ -152,7 +152,7 @@ const Home = () => {
             key={album.id}
             onClick={() => navigate(`/album/${album.id}`)}>
             <div>
-              <ImgLazy
+              <Image
                 className="w-full aspect-square object-cover"
                 src={`${album.blurPicUrl}?param=300y300`}
                 alt={album.name}
@@ -177,7 +177,7 @@ const Home = () => {
                 key={s.id}
                 onClick={() => navigate(`/album/${s.al.id}`)}>
                 <div className="w-8 h-8">
-                  <ImgLazy
+                  <Image
                     src={`${s.al.picUrl}?param=300y300`}
                     className="w-full h-full object-cover shrink-0"
                     alt={s.name}
@@ -204,7 +204,7 @@ const Home = () => {
             key={list.id}
             onClick={() => navigate(`/playlist/${list.id}`)}>
             <div>
-              <ImgLazy
+              <Image
                 className="w-full aspect-square object-cover"
                 src={`${list.coverImgUrl}?param=300y300`}
                 alt={list.name}

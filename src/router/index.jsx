@@ -1,12 +1,12 @@
 import { createBrowserRouter } from 'react-router-dom'
 // import Login from '../pages/Login'
 import MainLayout from '../layouts/MainLayout'
-import Home from '../pages/Home'
+// import Home from '../pages/Home'
 import Menubar from '../components/Menubar'
 import SideBar from '../components/Sidebar'
 import Header from '../components/Header'
 import Album from '../pages/Album'
-import LibraryAlbums from '../pages/LibraryAlbums'
+// import LibraryAlbums from '../pages/LibraryAlbums'
 import Albums from '../pages/Albums'
 import Search from '../pages/Search'
 import RecentAlbums from '../pages/RecentAlbums'
@@ -22,10 +22,10 @@ const router = createBrowserRouter([
     path: '/',
     element: <MainLayout header={<Header />} menubar={<Menubar />} sidebar={<SideBar />} />,
     children: [
-      {
-        index: true,
-        element: <Home />,
-      },
+      // {
+      //   index: true,
+      //   element: <Home />,
+      // },
       {
         path: 'recent-albums',
         element: <RecentAlbums />,

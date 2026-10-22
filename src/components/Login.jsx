@@ -9,7 +9,7 @@ import {
 } from '../services/user'
 // import QRCode from 'react-qr-code'
 import useUserStore from '../stores/user'
-import ImgLazy from './ImgLazy'
+import Image from './Image'
 
 const Comp = () => {
   const [isLoginOpen, setIsLoginOpen] = useState(false)
@@ -142,7 +142,7 @@ const Comp = () => {
           ) : (
             <div>
               {/* {qrUrl && <QRCode value={qrUrl} size={220} />} */}
-              {qrImg && <ImgLazy src={qrImg} alt="qrcode" width={220} height={220} />}
+              {qrImg && <Image src={qrImg} alt="qrcode" width={220} height={220} />}
 
               <div>{status}</div>
               {/* <div>{JSON.stringify(loginStatusData)}</div> */}

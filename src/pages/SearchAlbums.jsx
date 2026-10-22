@@ -2,7 +2,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useSearch } from '../services/music'
 import InfiniteAlbums from '../components/InfiniteAlbums'
 import Loading from '../libs/Loading'
-import ImgLazy from '../components/ImgLazy'
+import Image from '../components/Image'
 
 const SearchAlbums = () => {
   const [searchParams] = useSearchParams()
@@ -29,7 +29,7 @@ const SearchAlbums = () => {
       isFetchingNextPage={isFetchingNextPage}
       renderItem={({ picUrl, name, id, artists }) => (
         <div onClick={() => handleAlbumClick(id)} key={id}>
-          <ImgLazy
+          <Image
             className="aspect-square w-full object-cover"
             src={`${picUrl}?param=300y300`}
             alt={name}

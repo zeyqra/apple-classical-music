@@ -15,7 +15,7 @@ import {
   SkipForward,
   Volume2,
 } from 'lucide-react'
-import ImgLazy from './ImgLazy'
+import Image from './Image'
 
 const Player = () => {
   const queue = useMusicStore(state => state.queue) // 默认 []
@@ -242,7 +242,7 @@ const Player = () => {
         <audio className="hidden" ref={audioRef}></audio>
         <div className="w-12 h-12 flex items-center justify-center border-r border-zinc-300">
           {id ? (
-            <ImgLazy className="w-full h-full" src={song.alPicUrl} alt="song cover" />
+            <Image className="w-full h-full" src={song.alPicUrl} alt="song cover" />
           ) : (
             <Music />
           )}

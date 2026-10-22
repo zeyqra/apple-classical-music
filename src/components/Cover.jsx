@@ -1,10 +1,10 @@
 import { Music } from 'lucide-react'
-import ImgLazy from './ImgLazy'
+import Image from './Image'
 
-const Cover = ({ song }) => {
+const Cover = ({ track }) => {
   return (
     <div className="w-full h-full flex items-center justify-center ">
-      {song ? <ImgLazy src={song.alPicUrl} /> : 'COVER'}
+      {track?.album_cover_url ? <Image src={track.album_cover_url} /> : 'COVER'}
     </div>
   )
 }

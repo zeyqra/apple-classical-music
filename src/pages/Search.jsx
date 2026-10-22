@@ -2,7 +2,7 @@ import { NavLink, useNavigate, useSearchParams } from 'react-router-dom'
 import { useSearch, useSearchHot } from '../services/music'
 import HorizenScroll from '../components/HorizenScroll'
 import Loading from '../libs/Loading'
-import ImgLazy from '../components/ImgLazy'
+import Image from '../components/Image'
 
 const Search = () => {
   const [searchParams] = useSearchParams()
@@ -48,7 +48,7 @@ const Search = () => {
                 key={album.id}
                 onClick={() => navigate(`/album/${album.id}`)}>
                 <div>
-                  <ImgLazy
+                  <Image
                     className="w-full aspect-square object-cover"
                     src={`${album.blurPicUrl}?param=300y300`}
                     alt={album.name}
@@ -72,11 +72,7 @@ const Search = () => {
                     className="flex items-center gap-1 space-y-1"
                     key={s.id}
                     onClick={() => navigate(`/album/${s.al.id}`)}>
-                    <ImgLazy
-                      src={`${s.al.picUrl}?param=180y180`}
-                      className="w-8 h-8"
-                      alt={s.name}
-                    />
+                    <Image src={`${s.al.picUrl}?param=180y180`} className="w-8 h-8" alt={s.name} />
                     <div className="flex flex-col flex-1 text-xs">
                       <span>{s.name}</span>
                       <span>{s.ar.map(a => a.name).join('/')}</span>
@@ -95,7 +91,7 @@ const Search = () => {
                 style={{ width: 'calc(12.5% - 0.25rem)' }}
                 className="shrink-0 mx-0.5"
                 key={artist.id}>
-                <ImgLazy
+                <Image
                   className="aspect-square w-full object-cover rounded-full"
                   src={`${artist.picUrl}?param=300y300`}
                   alt={artist.name}

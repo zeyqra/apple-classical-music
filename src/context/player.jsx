@@ -1,6 +1,5 @@
-import { createContext, useCallback, useContext, useEffect, useRef, useState } from 'react'
+import { createContext, useCallback, useContext, useEffect, useRef } from 'react'
 import useMusicStore from '../stores/music'
-import { useSongUrlV1 } from '../services/music'
 import { usePlayNextPrev } from '../hooks/useMusic'
 
 const PlayerContext = createContext()
@@ -11,11 +10,10 @@ export const PlayerProvider = ({ children }) => {
   const index = useMusicStore(state => state.index) // 默认 null
 
   const track = queue[index] || null
-  const id = track ? track.id : null
-  const url = id ? `/media/${id}.flac` : null
+  const id = track?.id || null
+  const url = track?.track_url || null
   // const { data: urlData = {} } = useSongUrlV1({ id, level: 'lossless' })
   // const url = urlData.data?.[0]?.url // undefined
-  console.log('console: id url', track, id, url)
   const isPlay = useMusicStore(state => state.isPlay)
   const setIsPlay = useMusicStore(state => state.setIsPlay)
   const dt = useMusicStore(state => state.dt)

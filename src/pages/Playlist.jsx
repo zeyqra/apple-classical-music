@@ -6,7 +6,7 @@ import { ChartNoAxesColumn, Play, Star } from 'lucide-react'
 import InfiniteSongs from '../components/InfiniteSongs'
 import { useParams } from 'react-router-dom'
 import Loading from '../libs/Loading'
-import ImgLazy from '../components/ImgLazy'
+import Image from '../components/Image'
 
 const Favourites = () => {
   const { id } = useParams()
@@ -73,11 +73,7 @@ const Favourites = () => {
   return (
     <div className="flex flex-col h-full">
       <div className="shrink-0 flex gap-2 p-1 sticky top-0 bg-white z-20 border-b border-zinc-300">
-        <ImgLazy
-          className="w-45 h-45 object-cover"
-          src={`${coverImgUrl}?param=300y300`}
-          alt={name}
-        />
+        <Image className="w-45 h-45 object-cover" src={`${coverImgUrl}?param=300y300`} alt={name} />
         <div className="flex-1 flex flex-col justify-between">
           <div>
             <h2 className="text-2xl">{name}</h2>

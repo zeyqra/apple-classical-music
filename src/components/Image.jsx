@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-const ImgLazy = ({ src, className, alt, width, height }) => {
+const Image = ({ src, className, alt, width, height }) => {
   const [isLoaded, setIsLoaded] = useState(false)
   return (
     <div className={`bg-zinc-100 overflow-hidden ${className}`}>
@@ -18,4 +18,4 @@ const ImgLazy = ({ src, className, alt, width, height }) => {
   )
 }
 
-export default ImgLazy
+export default Image

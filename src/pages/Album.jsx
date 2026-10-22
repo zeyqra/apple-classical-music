@@ -4,12 +4,12 @@ import Loading from '../libs/Loading'
 
 import { useQuery } from '../hooks/useQuery'
 import useMusicStore from '../stores/music'
+import Image from '../components/Image'
 
 const Album = () => {
   const { id } = useParams()
   const { result = { title: '', tracks: [] }, isLoading, error } = useQuery(album, { id })
 
-  // const tracksGrouped = result?.tracksGrouped || []
   const playAlbum = useMusicStore(state => state.playAlbum)
   const handlePlayClick = index => {
     playAlbum(tracks, index)
@@ -62,9 +62,14 @@ const Album = () => {
   }
   return (
     <div>
-      {/* 专辑标题 */}
-      <div>{result?.title}</div>
-      <button onClick={() => handlePlayClick(0)}>播放</button>
+      {/* 专辑信息 */}
+      <div className="flex">
+        {/* <Image src={result?.cover_url} className="w-30 h-30"></Image> */}
+        <div>
+          <div>{result?.title}</div>
+          <button onClick={() => handlePlayClick(0)}>播放</button>
+        </div>
+      </div>
       {/* 专辑音轨 */}
       <div>
         {tracksGrouped.map(({ recording, tracks }) => {

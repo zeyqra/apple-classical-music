@@ -4,7 +4,7 @@ import { ChartNoAxesColumn, Ellipsis, Play } from 'lucide-react'
 import useMusicStore from '../stores/music'
 import { useLike, useLikeList } from '../services/music'
 import { addSongToQueue, msToHms } from '../utils'
-import ImgLazy from './ImgLazy'
+import Image from './Image'
 
 const InfiniteSongs = ({ list, fetchNextPage, hasNextPage, isFetchingNextPage }) => {
   const playAlbum = useMusicStore(state => state.playAlbum)
@@ -92,7 +92,7 @@ const InfiniteSongs = ({ list, fetchNextPage, hasNextPage, isFetchingNextPage })
                 </div>
                 {(song.al || song.album).picUrl && (
                   <div className="w-10 h-10 shrink-0 flex items-center justify-center">
-                    <ImgLazy
+                    <Image
                       src={`${(song.al || song.album).picUrl}?param=180y180`}
                       alt={(song.al || song.album).name}
                     />

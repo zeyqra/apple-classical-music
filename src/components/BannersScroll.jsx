@@ -1,7 +1,7 @@
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
-import ImgLazy from './ImgLazy'
+import Image from './Image'
 
 const BannersScroll = ({ list }) => {
   const itemsContainer = useRef()
@@ -27,7 +27,7 @@ const BannersScroll = ({ list }) => {
               onClick={() => handleItemClick(album)}>
               <div className="mb-1">{album.typeTitle}</div>
               <div className="h-[280px]">
-                <ImgLazy className="w-full h-full object-cover" src={album.imageUrl} />
+                <Image className="w-full h-full object-cover" src={album.imageUrl} />
               </div>
             </div>
           ))}

@@ -1,6 +1,6 @@
 import { useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
-import ImgLazy from './ImgLazy'
+import Image from './Image'
 
 const BannerList = ({ title, list }) => {
   const itemsContainer = useRef()
@@ -28,7 +28,7 @@ const BannerList = ({ title, list }) => {
               className="shrink-0"
               key={artist.id}
               onClick={() => handleItemClick(artist)}>
-              <ImgLazy
+              <Image
                 className="aspect-square w-full object-cover rounded-full"
                 src={artist.picUrl}
                 alt={artist.name}

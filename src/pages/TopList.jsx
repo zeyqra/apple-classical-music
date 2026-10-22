@@ -1,7 +1,7 @@
 import { useToplist } from '../services/music'
 import { useNavigate } from 'react-router-dom'
 import Loading from '../libs/Loading'
-import ImgLazy from '../components/ImgLazy'
+import Image from '../components/Image'
 
 const RecentAlbums = () => {
   const { data: toplistData, isLoading: toplistLoading, error: toplistError } = useToplist()
@@ -17,7 +17,7 @@ const RecentAlbums = () => {
         {toplists.length > 0 &&
           toplists.map(({ coverImgUrl, name, id }) => (
             <div onClick={() => handleAlbumClick(id)} key={id}>
-              <ImgLazy className="aspect-square w-full object-cover" src={coverImgUrl} alt={name} />
+              <Image className="aspect-square w-full object-cover" src={coverImgUrl} alt={name} />
               <div className="line-clamp-2 wrap-break-word">{name}</div>
             </div>
           ))}

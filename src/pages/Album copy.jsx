@@ -11,7 +11,7 @@ import useMusicStore from '../stores/music'
 import Dropdown from '../libs/Dropdown'
 import { ChartNoAxesColumn, Check, Ellipsis, Play, Plus, Star } from 'lucide-react'
 import Loading from '../libs/Loading'
-import ImgLazy from '../components/ImgLazy'
+import Image from '../components/Image'
 import Dialog from '../libs/Dialog'
 import { useState } from 'react'
 
@@ -77,7 +77,7 @@ const Album = () => {
     <div className="h-full flex flex-col">
       <div className="shrink-0 flex gap-2 p-1 sticky top-0 bg-white z-10 border-b border-zinc-300">
         <div className="w-45 h-45">
-          <ImgLazy
+          <Image
             className="w-full h-full object-cover"
             src={`${album.picUrl}?param=300y300`}
             alt={album.name}
