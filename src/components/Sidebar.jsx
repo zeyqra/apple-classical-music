@@ -1,14 +1,11 @@
-import useAppStore from '../stores/app'
+import useStore from '../store.js'
 import Queue from './Queue'
-import Lyric from './Lyric'
 
 const SideBar = () => {
-  const sbType = useAppStore(state => state.sbType)
+  const sbType = useStore(state => state.sbType)
   let content = null
   if (sbType === 'queue') {
     content = <Queue></Queue>
-  } else if (sbType === 'lyric') {
-    content = <Lyric></Lyric>
   }
 
   return (

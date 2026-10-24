@@ -1,5 +1,3 @@
-import { logout } from '../services/user'
-
 const BASE_URL = '/api'
 
 export const request = async (path, { payload, method = 'GET', headers = {}, signal }) => {
@@ -23,7 +21,6 @@ export const request = async (path, { payload, method = 'GET', headers = {}, sig
 
   if (!response.ok) {
     if (response.status === 401) {
-      logout()
     }
 
     throw new Error('HTTP ' + response.status)

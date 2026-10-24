@@ -1,8 +1,8 @@
 import { Outlet } from 'react-router-dom'
-import useAppStore from '../stores/app'
+import useStore from './store'
 
 const MainLayout = ({ header, menubar, sidebar }) => {
-  const isSbOpen = useAppStore(state => state.isSbOpen)
+  const isSbOpen = useStore(state => state.isSbOpen)
   return (
     <div className="h-screen w-full overflow-hidden flex">
       {/* 菜单栏 */}

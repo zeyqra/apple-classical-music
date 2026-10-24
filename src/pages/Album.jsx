@@ -1,21 +1,26 @@
 import { useParams } from 'react-router-dom'
-import { album } from '../services/music'
-import Loading from '../libs/Loading'
-
-import { useQuery } from '../hooks/useQuery'
-import useMusicStore from '../stores/music'
-import Image from '../components/Image'
+import { album, libraryTracksAdd, libraryTracksRemove } from '../api.js'
+import { useQuery } from '../hooks.js'
+import useStore from '../store.js'
 
 const Album = () => {
   const { id } = useParams()
   const { result = { title: '', tracks: [] }, isLoading, error } = useQuery(album, { id })
 
-  const playAlbum = useMusicStore(state => state.playAlbum)
+  const playAlbum = useStore(state => state.playAlbum)
+
   const handlePlayClick = index => {
     playAlbum(tracks, index)
   }
 
-  if (isLoading) return <Loading />
+  const handleAddTrackToLibrary = track => {
+    libraryTracksAdd({ id: track.id })
+  }
+  const handleRemoveTrackFromLibrary = track => {
+    libraryTracksRemove({ id: track.id })
+  }
+
+  if (isLoading) return 'Loading...'
   if (error) return 'Error'
 
   const tracks = result?.tracks || []
@@ -67,7 +72,7 @@ const Album = () => {
         {/* <Image src={result?.cover_url} className="w-30 h-30"></Image> */}
         <div>
           <div>{result?.title}</div>
-          <button onClick={() => handlePlayClick(0)}>播放</button>
+          <button onClick={() => handlePlayClick(0)}>▶</button>
         </div>
       </div>
       {/* 专辑音轨 */}
@@ -75,7 +80,7 @@ const Album = () => {
         {tracksGrouped.map(({ recording, tracks }) => {
           return (
             // 录音组
-            <div>
+            <div key={recording.id}>
               {/* 录音标题 */}
               <div>
                 <p>
@@ -91,7 +96,12 @@ const Album = () => {
               {/* 录音乐章 */}
               <div>
                 {tracks.map(track => (
-                  <p>{track.title}</p>
+                  <div key={track.id}>
+                    <span onClick={() => handlePlayClick(track.track_number - 1)}>▶</span>
+                    <span>{track.title}</span>
+                    <button onClick={() => handleAddTrackToLibrary(track)}>➕</button>
+                    <button onClick={() => handleRemoveTrackFromLibrary(track)}>➖</button>
+                  </div>
                 ))}
               </div>
             </div>

@@ -1,7 +1,7 @@
 {
   "name": "apple-classical-music-unstyled",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.1.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -11,13 +11,8 @@
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.3.0",
-    "@tanstack/react-query": "^5.100.14",
-    "axios": "^1.16.1",
-    "lucide-react": "^1.21.0",
-    "md5": "^2.3.0",
     "react": "^19.2.6",
     "react-dom": "^19.2.6",
-    "react-qr-code": "^2.2.0",
     "react-router-dom": "^7.15.1",
     "tailwindcss": "^4.3.0",
     "zustand": "^5.0.13"

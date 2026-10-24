@@ -1,4 +1,4 @@
-import useMusicStore from '../stores/music'
+import useMusicStore from './stores/music'
 
 export const msToHms = ms => {
   const totalSeconds = Math.max(0, Math.floor((ms ?? 0) / 1000))

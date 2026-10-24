@@ -1,10 +1,9 @@
-import useMusicStore from '../stores/music'
-import Image from './Image'
+import useStore from '../store'
 
 const Queue = () => {
-  const queue = useMusicStore(state => state.queue) // 默认 []
-  const setQueue = useMusicStore(state => state.setQueue)
-  const index = useMusicStore(state => state.index) // 默认 0
+  const queue = useStore(state => state.queue) // 默认 []
+  const setQueue = useStore(state => state.setQueue)
+  const index = useStore(state => state.index) // 默认 0
 
   const handleRemove = track => {
     setQueue(queue.filter(q => q.track_number !== track.track_number))
@@ -50,7 +49,7 @@ const Queue = () => {
         {tracksGrouped.map(({ recording, tracks }) => {
           return (
             // 录音组
-            <div>
+            <div key={recording.id + '-' + tracks[0].id}>
               {/* 录音标题 */}
               <div>
                 <div>
@@ -67,9 +66,9 @@ const Queue = () => {
               {/* 录音乐章 */}
               <div>
                 {tracks.map(track => (
-                  <div className="flex" key={track.track_number}>
-                    <button onClick={() => handleRemove(track)}> - </button>
+                  <div className="flex" key={track.id}>
                     <p>{track.title}</p>
+                    <button onClick={() => handleRemove(track)}>➖</button>
                   </div>
                 ))}
               </div>

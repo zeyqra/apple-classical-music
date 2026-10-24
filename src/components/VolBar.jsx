@@ -1,5 +1,3 @@
-import { Volume2 } from 'lucide-react'
-
 const VolBar = ({ value, onChange, className }) => {
   return (
     <div className={`flex gap-1 ${className}`}>

@@ -1,7 +1,5 @@
-import { Pause, Play, Repeat, Repeat1, RepeatOff, SkipBack, SkipForward } from 'lucide-react'
-
 const Controller = ({
-  song,
+  track,
   handlePrevNextClick,
   handlePlayPauseClick,
   handleModeClick,

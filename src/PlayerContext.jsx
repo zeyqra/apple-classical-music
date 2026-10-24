@@ -1,34 +1,34 @@
 import { createContext, useCallback, useContext, useEffect, useRef } from 'react'
-import useMusicStore from '../stores/music'
-import { usePlayNextPrev } from '../hooks/useMusic'
+import useStore from './store'
+import { usePlayNextPrev } from './hooks'
 
 const PlayerContext = createContext()
 
 export const PlayerProvider = ({ children }) => {
   const audioRef = useRef(null)
-  const queue = useMusicStore(state => state.queue) // 默认 []
-  const index = useMusicStore(state => state.index) // 默认 null
+  const queue = useStore(state => state.queue) // 默认 []
+  const index = useStore(state => state.index) // 默认 null
 
   const track = queue[index] || null
   const id = track?.id || null
   const url = track?.track_url || null
   // const { data: urlData = {} } = useSongUrlV1({ id, level: 'lossless' })
   // const url = urlData.data?.[0]?.url // undefined
-  const isPlay = useMusicStore(state => state.isPlay)
-  const setIsPlay = useMusicStore(state => state.setIsPlay)
-  const dt = useMusicStore(state => state.dt)
-  const setDt = useMusicStore(state => state.setDt)
-  const ct = useMusicStore(state => state.ct)
-  const setCt = useMusicStore(state => state.setCt)
-  const vol = useMusicStore(state => state.vol)
-  const setVol = useMusicStore(state => state.setVol)
-  const mode = useMusicStore(state => state.mode)
-  const setMode = useMusicStore(state => state.setMode)
-  const isSeeking = useMusicStore(state => state.isSeeking)
-  const setIsSeeking = useMusicStore(state => state.setIsSeeking)
-  const seekCt = useMusicStore(state => state.seekCt)
-  const setSeekCt = useMusicStore(state => state.setSeekCt)
-  const sameIndexAndIdButReStart = useMusicStore(state => state.sameIndexAndIdButReStart)
+  const isPlay = useStore(state => state.isPlay)
+  const setIsPlay = useStore(state => state.setIsPlay)
+  const dt = useStore(state => state.dt)
+  const setDt = useStore(state => state.setDt)
+  const ct = useStore(state => state.ct)
+  const setCt = useStore(state => state.setCt)
+  const vol = useStore(state => state.vol)
+  const setVol = useStore(state => state.setVol)
+  const mode = useStore(state => state.mode)
+  const setMode = useStore(state => state.setMode)
+  const isSeeking = useStore(state => state.isSeeking)
+  const setIsSeeking = useStore(state => state.setIsSeeking)
+  const seekCt = useStore(state => state.seekCt)
+  const setSeekCt = useStore(state => state.setSeekCt)
+  const sameIndexAndIdButReStart = useStore(state => state.sameIndexAndIdButReStart)
 
   const playNextPrev = usePlayNextPrev()
 

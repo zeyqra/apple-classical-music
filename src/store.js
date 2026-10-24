@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 
-const useMusicStore = create((set, get) => ({
+const useStore = create(set => ({
   id: null,
   /**
    * {
@@ -43,6 +43,15 @@ const useMusicStore = create((set, get) => ({
   setIsSeeking: isSeeking => set(() => ({ isSeeking })),
   seekCt: 0,
   setSeekCt: seekCt => set(() => ({ seekCt })),
+
+  isSbOpen: false,
+  setIsSbOpen: isSbOpen => set({ isSbOpen }),
+  sbType: 'queue',
+  setSbType: sbType => set({ sbType }),
+  searchKeywords: '',
+  setSearchKeywords: searchKeywords => set({ searchKeywords }),
+  showFullPlayer: false,
+  setShowFullPlayer: showFullPlayer => set({ showFullPlayer }),
 }))
 
-export default useMusicStore
+export default useStore
