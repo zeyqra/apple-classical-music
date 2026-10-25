@@ -13,7 +13,7 @@ const useStore = create(set => ({
   index: 0,
   mode: 'listLoop',
   sameIndexAndIdButReStart: 0,
-  playAlbum: (queue, index = 0) => {
+  play: (queue, index = 0) => {
     // const state = get()
     // 点击专辑或歌曲播放后，仍有可能 index、id不变
     // const oldIndex = state.index

@@ -9,13 +9,19 @@ export const request = async (path, { payload, method = 'GET', headers = {}, sig
   // }
   // console.log('console: ', url)
 
+  if (payload && method === 'GET') {
+    Object.entries(payload).forEach(([key, value]) => {
+      url.searchParams.append(key, value)
+    })
+  }
+
   const response = await fetch(url, {
     method,
     headers: {
-      ...(payload ?? { 'Content-Type': 'application/json;charset=UTF-8' }),
+      ...(payload && method !== 'GET' ? { 'Content-Type': 'application/json;charset=UTF-8' } : {}),
       ...headers,
     },
-    ...(payload ?? { body: JSON.stringify(payload) }),
+    ...(payload && method !== 'GET' ? { body: JSON.stringify(payload) } : {}),
     signal,
   })
 
@@ -31,6 +37,9 @@ export const request = async (path, { payload, method = 'GET', headers = {}, sig
   return await response.json()
 }
 
-export const get = (path, options) => request(path, options)
+export const get = (path, payload, options) => request(path, { method: 'GET', payload, ...options })
 export const post = (path, payload, options) =>
-  request(path, { ...options, payload, method: 'POST' })
+  request(path, { method: 'POST', payload, ...options })
+export const put = (path, payload, options) => request(path, { method: 'PUT', payload, ...options })
+export const del = (path, payload, options) =>
+  request(path, { method: 'DELETE', payload, ...options })

@@ -1,36 +1,11 @@
-import { request } from './request'
+import { del, get, post } from './request'
 
-export const albums = (params, options) => {
-  return request('/albums', {
-    params,
-    ...options,
-  })
-}
+export const albums = params => get('/albums', params)
 
-export const album = (params, options) => {
-  return request(`/albums/${params.id}`, {
-    params,
-    ...options,
-  })
-}
+export const album = params => get(`/albums/${params.id}`)
 
-export const libraryTracksList = (params, options) => {
-  return request(`/library/tracks/list`, {
-    params,
-    ...options,
-  })
-}
-export const libraryTracksAdd = (params, options) => {
-  return request(`/library/tracks/add/${params.id}`, {
-    params,
-    method: 'POST',
-    ...options,
-  })
-}
-export const libraryTracksRemove = (params, options) => {
-  return request(`/library/tracks/remove/${params.id}`, {
-    params,
-    method: 'POST',
-    ...options,
-  })
-}
+export const libraryTracks = () => get(`/library/tracks`)
+
+export const libraryTracksAdd = params => post(`/library/tracks/${params.id}`)
+
+export const libraryTracksRemove = params => del(`/library/tracks/${params.id}`)

@@ -5,23 +5,20 @@ import useStore from '../store.js'
 
 const Album = () => {
   const { id } = useParams()
-  const { result = { title: '', tracks: [] }, isLoading, error } = useQuery(album, { id })
+  const { result } = useQuery(album, { id })
 
-  const playAlbum = useStore(state => state.playAlbum)
+  const play = useStore(state => state.play)
 
   const handlePlayClick = index => {
-    playAlbum(tracks, index)
+    play(tracks, index)
   }
 
-  const handleAddTrackToLibrary = track => {
-    libraryTracksAdd({ id: track.id })
+  const handleAddTrackToLibrary = id => {
+    libraryTracksAdd({ id })
   }
-  const handleRemoveTrackFromLibrary = track => {
-    libraryTracksRemove({ id: track.id })
+  const handleRemoveTrackFromLibrary = id => {
+    libraryTracksRemove({ id })
   }
-
-  if (isLoading) return 'Loading...'
-  if (error) return 'Error'
 
   const tracks = result?.tracks || []
   const tracksGrouped = []
@@ -29,23 +26,8 @@ const Album = () => {
   for (let i = 0; i <= tracks.length; i++) {
     const { recording_id } = tracks[i] || {}
     if (i >= 1 && recording_id !== tracks[i - 1]?.recording_id) {
-      const {
-        id,
-        title,
-        recording_id,
-        album_id,
-        album_title,
-        track_number,
-        composer_id,
-        composer_name,
-        work_id,
-        work_title,
-        performers,
-        // conductor,
-        // orchestra,
-        // soloist,
-        // singer,
-      } = tracks[i - 1]
+      const { recording_id, composer_id, composer_name, work_id, work_title, performers } =
+        tracks[i - 1]
       tracksGrouped.push({
         recording: {
           id: recording_id,
@@ -54,10 +36,6 @@ const Album = () => {
           work_id,
           work_title,
           performers,
-          // conductor,
-          // orchestra,
-          // soloist,
-          // singer,
         },
         tracks: [...group],
       })
@@ -99,8 +77,8 @@ const Album = () => {
                   <div key={track.id}>
                     <span onClick={() => handlePlayClick(track.track_number - 1)}>▶</span>
                     <span>{track.title}</span>
-                    <button onClick={() => handleAddTrackToLibrary(track)}>➕</button>
-                    <button onClick={() => handleRemoveTrackFromLibrary(track)}>➖</button>
+                    <button onClick={() => handleAddTrackToLibrary(track.id)}>➕</button>
+                    <button onClick={() => handleRemoveTrackFromLibrary(track.id)}>➖</button>
                   </div>
                 ))}
               </div>

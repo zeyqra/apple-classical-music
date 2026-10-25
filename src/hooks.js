@@ -47,31 +47,30 @@ export const useQuery = (queryFn, params) => {
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState(null)
 
-  useEffect(() => {
-    const controller = new AbortController()
+  const refetch = async () => {
+    setIsLoading(true)
+    setError(null)
 
-    const fetchData = async () => {
-      setIsLoading(true)
-      setError(null)
+    try {
+      // const result = await queryFn(params, { signal: controller.signal })
+      const result = await queryFn(params)
 
-      try {
-        const result = await queryFn(params, { signal: controller.signal })
-
-        setResult(result)
-      } catch (error) {
-        // !response.ok 时
-        if (error.name === 'AbortError') return
-        setError(error)
-        console.error(error)
-      } finally {
-        setIsLoading(false)
-      }
+      setResult(result)
+    } catch (error) {
+      // !response.ok 时
+      // if (error.name === 'AbortError') return
+      setError(error)
+      console.error(error)
+    } finally {
+      setIsLoading(false)
     }
+  }
 
-    fetchData()
-
-    return () => controller.abort()
+  useEffect(() => {
+    // const controller = new AbortController()
+    refetch()
+    // return () => controller.abort()
   }, [queryFn, params])
 
-  return { result, isLoading, error }
+  return { result, isLoading, error, refetch }
 }

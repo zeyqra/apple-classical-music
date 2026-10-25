@@ -192,7 +192,7 @@ export const PlayerProvider = ({ children }) => {
 
   useEffect(() => {
     if (!audioRef.current) return
-    console.log('console: effect vol ', vol * 0.5)
+    // console.log('console: effect vol ', vol * 0.5)
     audioRef.current.volume = vol * 0.5
   }, [vol])
   useEffect(() => {
