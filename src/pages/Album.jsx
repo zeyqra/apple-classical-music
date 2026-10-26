@@ -6,6 +6,10 @@ import useStore from '../store.js'
 const Album = () => {
   const { id } = useParams()
   const { result } = useQuery(album, { id })
+  const { tracks = [], title = '' } = result || {}
+  const trackIds = useStore(state => state.trackIds)
+  const addTracksToLibrary = useStore(state => state.addTracksToLibrary)
+  const removeTracksFromLibrary = useStore(state => state.removeTracksFromLibrary)
 
   const play = useStore(state => state.play)
 
@@ -13,14 +17,6 @@ const Album = () => {
     play(tracks, index)
   }
 
-  const handleAddTrackToLibrary = id => {
-    libraryTracksAdd({ id })
-  }
-  const handleRemoveTrackFromLibrary = id => {
-    libraryTracksRemove({ id })
-  }
-
-  const tracks = result?.tracks || []
   const tracksGrouped = []
   const group = []
   for (let i = 0; i <= tracks.length; i++) {
@@ -49,8 +45,9 @@ const Album = () => {
       <div className="flex">
         {/* <Image src={result?.cover_url} className="w-30 h-30"></Image> */}
         <div>
-          <div>{result?.title}</div>
+          <div>{title}</div>
           <button onClick={() => handlePlayClick(0)}>▶</button>
+          <button onClick={() => addTracksToLibrary(tracks.map(tk => tk.id))}>➕</button>
         </div>
       </div>
       {/* 专辑音轨 */}
@@ -77,8 +74,8 @@ const Album = () => {
                   <div key={track.id}>
                     <span onClick={() => handlePlayClick(track.track_number - 1)}>▶</span>
                     <span>{track.title}</span>
-                    <button onClick={() => handleAddTrackToLibrary(track.id)}>➕</button>
-                    <button onClick={() => handleRemoveTrackFromLibrary(track.id)}>➖</button>
+                    <button onClick={() => addTracksToLibrary([track.id])}>➕</button>
+                    <button onClick={() => removeTracksFromLibrary([track.id])}>➖</button>
                   </div>
                 ))}
               </div>

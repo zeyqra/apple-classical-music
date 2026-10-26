@@ -6,6 +6,6 @@ export const album = params => get(`/albums/${params.id}`)
 
 export const libraryTracks = () => get(`/library/tracks`)
 
-export const libraryTracksAdd = params => post(`/library/tracks/${params.id}`)
+export const libraryTracksAdd = data => post(`/library/tracks`, data)
 
-export const libraryTracksRemove = params => del(`/library/tracks/${params.id}`)
+export const libraryTracksRemove = data => del(`/library/tracks`, data)

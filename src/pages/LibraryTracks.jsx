@@ -11,11 +11,8 @@ const LibraryTracks = () => {
     play(tracks, index)
   }
 
-  const handleAddTrackToLibrary = id => {
-    libraryTracksAdd({ id })
-  }
   const handleRemoveTrackFromLibrary = async id => {
-    await libraryTracksRemove({ id })
+    await libraryTracksRemove({ ids: [id] })
     refetch()
   }
 
@@ -66,7 +63,6 @@ const LibraryTracks = () => {
                 <div key={track.id}>
                   <span onClick={() => handlePlayClick(track.track_number - 1)}>▶</span>
                   <span>{track.title}</span>
-                  <button onClick={() => handleAddTrackToLibrary(track.id)}>➕</button>
                   <button onClick={() => handleRemoveTrackFromLibrary(track.id)}>➖</button>
                 </div>
               ))}

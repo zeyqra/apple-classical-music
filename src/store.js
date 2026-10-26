@@ -1,12 +1,9 @@
 import { create } from 'zustand'
+import { libraryTracks, libraryTracksAdd, libraryTracksRemove } from './api'
 
-const useStore = create(set => ({
+const useStore = create((set, get) => ({
+  // 播放器
   id: null,
-  /**
-   * {
-   *  id, name, dt, alPicUrl, artists, sort, played
-   * }
-   */
   queue: [],
   playlist: [],
   isPlay: false,
@@ -44,6 +41,7 @@ const useStore = create(set => ({
   seekCt: 0,
   setSeekCt: seekCt => set(() => ({ seekCt })),
 
+  // 侧边栏
   isSbOpen: false,
   setIsSbOpen: isSbOpen => set({ isSbOpen }),
   sbType: 'queue',
@@ -52,6 +50,25 @@ const useStore = create(set => ({
   setSearchKeywords: searchKeywords => set({ searchKeywords }),
   showFullPlayer: false,
   setShowFullPlayer: showFullPlayer => set({ showFullPlayer }),
+
+  // 资料库
+  trackIds: new Set(),
+  fetchTrackIds: async () => {
+    const tracks = await libraryTracks()
+    set({ trackIds: new Set(tracks.map(tk => tk.id)) })
+  },
+  addTracksToLibrary: async ids => {
+    await libraryTracksAdd({ ids })
+    set(state => ({ trackIds: new Set(...state.trackIds, ...ids) }))
+  },
+  removeTracksFromLibrary: async ids => {
+    await libraryTracksRemove({ ids })
+    set(state => {
+      const trackIds = new Set(state.trackIds)
+      ids.forEach(id => trackIds.delete(id))
+      return { trackIds }
+    })
+  },
 }))
 
 export default useStore
