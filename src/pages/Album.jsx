@@ -47,7 +47,10 @@ const Album = () => {
         <div>
           <div>{title}</div>
           <button onClick={() => handlePlayClick(0)}>▶</button>
-          <button onClick={() => addTracksToLibrary(tracks.map(tk => tk.id))}>➕</button>
+          <button
+            onClick={() => addTracksToLibrary({ trackIds: tracks.map(tk => tk.id), albumId: id })}>
+            ➕
+          </button>
         </div>
       </div>
       {/* 专辑音轨 */}
@@ -74,8 +77,16 @@ const Album = () => {
                   <div key={track.id}>
                     <span onClick={() => handlePlayClick(track.track_number - 1)}>▶</span>
                     <span>{track.title}</span>
-                    <button onClick={() => addTracksToLibrary([track.id])}>➕</button>
-                    <button onClick={() => removeTracksFromLibrary([track.id])}>➖</button>
+                    <button
+                      onClick={() => addTracksToLibrary({ trackIds: [track.id], albumId: id })}>
+                      ➕
+                    </button>
+                    <button
+                      onClick={() =>
+                        removeTracksFromLibrary({ trackIds: [track.id], albumId: id })
+                      }>
+                      ➖
+                    </button>
                   </div>
                 ))}
               </div>

@@ -57,15 +57,15 @@ const useStore = create((set, get) => ({
     const tracks = await libraryTracks()
     set({ trackIds: new Set(tracks.map(tk => tk.id)) })
   },
-  addTracksToLibrary: async ids => {
-    await libraryTracksAdd({ ids })
-    set(state => ({ trackIds: new Set(...state.trackIds, ...ids) }))
+  addTracksToLibrary: async ({ trackIds, albumId }) => {
+    await libraryTracksAdd({ trackIds, albumId })
+    set(state => ({ trackIds: new Set(...state.trackIds, ...trackIds) }))
   },
-  removeTracksFromLibrary: async ids => {
-    await libraryTracksRemove({ ids })
+  removeTracksFromLibrary: async ({ trackIds, albumId }) => {
+    await libraryTracksRemove({ trackIds, albumId })
     set(state => {
       const trackIds = new Set(state.trackIds)
-      ids.forEach(id => trackIds.delete(id))
+      trackIds.forEach(id => trackIds.delete(id))
       return { trackIds }
     })
   },

@@ -4,6 +4,7 @@ import useStore from '../store.js'
 
 const LibraryTracks = () => {
   const { result, refetch } = useQuery(libraryTracks)
+  const removeTracksFromLibrary = useStore(state => state.removeTracksFromLibrary)
 
   const play = useStore(state => state.play)
 
@@ -11,8 +12,8 @@ const LibraryTracks = () => {
     play(tracks, index)
   }
 
-  const handleRemoveTrackFromLibrary = async id => {
-    await libraryTracksRemove({ ids: [id] })
+  const handleRemoveTrackFromLibrary = async data => {
+    await removeTracksFromLibrary(data)
     refetch()
   }
 
@@ -63,7 +64,15 @@ const LibraryTracks = () => {
                 <div key={track.id}>
                   <span onClick={() => handlePlayClick(track.track_number - 1)}>▶</span>
                   <span>{track.title}</span>
-                  <button onClick={() => handleRemoveTrackFromLibrary(track.id)}>➖</button>
+                  <button
+                    onClick={() =>
+                      handleRemoveTrackFromLibrary({
+                        trackIds: [track.id],
+                        albumId: track.album_id,
+                      })
+                    }>
+                    ➖
+                  </button>
                 </div>
               ))}
             </div>
