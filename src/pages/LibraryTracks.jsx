@@ -1,10 +1,9 @@
 import { useQuery } from '../hooks.js'
-import { libraryTracks, libraryTracksAdd, libraryTracksRemove } from '../api.js'
+import { libraryTracks, libraryTracksRemove } from '../api.js'
 import useStore from '../store.js'
 
 const LibraryTracks = () => {
   const { result, refetch } = useQuery(libraryTracks)
-  const removeTracksFromLibrary = useStore(state => state.removeTracksFromLibrary)
 
   const play = useStore(state => state.play)
 
@@ -13,7 +12,7 @@ const LibraryTracks = () => {
   }
 
   const handleRemoveTrackFromLibrary = async data => {
-    await removeTracksFromLibrary(data)
+    await libraryTracksRemove(data)
     refetch()
   }
 
@@ -45,7 +44,7 @@ const LibraryTracks = () => {
       {tracksGrouped.map(({ recording, tracks }) => {
         return (
           // 录音组
-          <div key={recording.id}>
+          <div key={tracks[0].id}>
             {/* 录音标题 */}
             <div>
               <p>

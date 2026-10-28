@@ -4,8 +4,8 @@ import { PlayerProvider } from './PlayerContext'
 import useStore from './store'
 
 function App() {
-  const fetchTrackIds = useStore(state => state.fetchTrackIds)
-  fetchTrackIds()
+  // const fetchLibraryTracks = useStore(state => state.fetchLibraryTracks)
+  // fetchLibraryTracks()
   return (
     <div>
       <PlayerProvider>

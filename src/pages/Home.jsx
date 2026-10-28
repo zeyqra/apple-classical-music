@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom'
 import { useQuery } from '../hooks.js'
-import { albums } from '../api.js'
+import { albums, libraryTracksAdd, libraryTracksRemove } from '../api.js'
 
 const Home = () => {
   const { result = [], isLoading, error } = useQuery(albums)
@@ -15,6 +15,8 @@ const Home = () => {
       {result?.map(album => (
         <div key={album.id} onClick={() => handleAlbumClick(album.id)}>
           {album.title}
+          <button onClick={() => libraryTracksAdd({ albumId: album.id })}>➕</button>
+          <button onClick={() => libraryTracksRemove({ albumId: album.id })}>➖</button>
         </div>
       ))}
     </div>

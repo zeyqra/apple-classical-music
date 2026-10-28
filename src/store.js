@@ -52,23 +52,34 @@ const useStore = create((set, get) => ({
   setShowFullPlayer: showFullPlayer => set({ showFullPlayer }),
 
   // 资料库
-  trackIds: new Set(),
-  fetchTrackIds: async () => {
-    const tracks = await libraryTracks()
-    set({ trackIds: new Set(tracks.map(tk => tk.id)) })
-  },
-  addTracksToLibrary: async ({ trackIds, albumId }) => {
-    await libraryTracksAdd({ trackIds, albumId })
-    set(state => ({ trackIds: new Set(...state.trackIds, ...trackIds) }))
-  },
-  removeTracksFromLibrary: async ({ trackIds, albumId }) => {
-    await libraryTracksRemove({ trackIds, albumId })
-    set(state => {
-      const trackIds = new Set(state.trackIds)
-      trackIds.forEach(id => trackIds.delete(id))
-      return { trackIds }
-    })
-  },
+  // albumIds: new Set(),
+  // albumTrackIds: new Set(),
+  // fetchLibraryTracks: async () => {
+  //   const tracks = await libraryTracks()
+  //   set({ albumIds: new Set(tracks.map(tk => tk.album_id)) })
+  //   set({ albumTrackIds: new Set(tracks.map(tk => `${tk.album_id}:${tk.id}`)) })
+  // },
+  // addTracksToLibrary: async ({ trackIds, albumId }) => {
+  //   await libraryTracksAdd({ trackIds, albumId })
+  //   set(state => ({ albumIds: new Set(...state.albumIds, albumId) }))
+  //   set(state => ({
+  //     albumTrackIds: new Set(...state.albumTrackIds, ...trackIds.map(tkId => `${albumId}:${tkId}`)),
+  //   }))
+  // },
+  // removeTracksFromLibrary: async ({ trackIds, albumId }) => {
+  //   await libraryTracksRemove({ trackIds, albumId })
+  //   set(state => {
+  //     const albumTrackIds = new Set(state.albumTrackIds)
+  //     trackIds.forEach(tkId => albumTrackIds.delete(`${albumId}:${tkId}`))
+
+  //     const albumIds = new Set(state.albumIds)
+  //     if (![...albumTrackIds].some(atId => atId.startWith(`${albumId}:`))) {
+  //       albumIds.delete(albumId)
+  //     }
+
+  //     return { albumTrackIds, albumIds }
+  //   })
+  // },
 }))
 
 export default useStore
