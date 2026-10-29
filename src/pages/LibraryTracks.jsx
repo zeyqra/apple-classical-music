@@ -1,18 +1,18 @@
 import { useQuery } from '../hooks.js'
-import { libraryTracks, libraryTracksRemove } from '../api.js'
+import { libraryTracks } from '../api.js'
 import useStore from '../store.js'
 
 const LibraryTracks = () => {
   const { result, refetch } = useQuery(libraryTracks)
-
   const play = useStore(state => state.play)
+  const removeTracksFromLibrary = useStore(state => state.removeTracksFromLibrary)
 
   const handlePlayClick = index => {
     play(tracks, index)
   }
 
   const handleRemoveTrackFromLibrary = async data => {
-    await libraryTracksRemove(data)
+    await removeTracksFromLibrary(data)
     refetch()
   }
 

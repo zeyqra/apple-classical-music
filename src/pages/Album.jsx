@@ -1,40 +1,42 @@
 import { useParams } from 'react-router-dom'
-import { album, libraryAlbumTrackIds, libraryTracksAdd, libraryTracksRemove } from '../api.js'
+import { album } from '../api.js'
 import { useQuery } from '../hooks.js'
 import useStore from '../store.js'
-import { useEffect, useState } from 'react'
 
 const Album = () => {
-  const { id } = useParams()
+  const { id: rawId } = useParams()
+  const id = Number(rawId)
   const { result } = useQuery(album, { id })
   const { tracks = [], title = '' } = result || {}
-  const [libraryTrackIds, setLibraryTrackIds] = useState(new Set())
-
   const play = useStore(state => state.play)
+  const libraryTrackIds = useStore(state => state.libraryTrackIds)
+  const addTracksToLibrary = useStore(state => state.addTracksToLibrary)
+  const removeTracksFromLibrary = useStore(state => state.removeTracksFromLibrary)
 
+  // const [libraryTrackIds, setLibraryTrackIds] = useState(new Set())
+  // const handleAddTracksToLibrary = async trackIds => {
+  //   await libraryTracksAdd({ trackIds, albumId: id })
+  //   setLibraryTrackIds(new Set([...libraryTrackIds, ...trackIds]))
+  // }
+  // const handleRemoveTrackFromLibrary = async trackIds => {
+  //   await libraryTracksRemove({ trackIds, albumId: id })
+  //   setLibraryTrackIds(state => {
+  //     const _libraryTrackIds = new Set(libraryTrackIds)
+  //     trackIds.forEach(id => _libraryTrackIds.delete(id))
+  //     return _libraryTrackIds
+  //   })
+  // }
+  // useEffect(() => {
+  //   const fetchLibAlTkIds = async () => {
+  //     setLibraryTrackIds(new Set(await libraryAlbumTrackIds({ id })))
+  //   }
+  //   fetchLibAlTkIds()
+  // }, [])
+
+  console.log('console: ids', libraryTrackIds)
   const handlePlayClick = index => {
     play(tracks, index)
   }
-
-  const handleAddTracksToLibrary = async trackIds => {
-    await libraryTracksAdd({ trackIds, albumId: id })
-    setLibraryTrackIds(new Set([...libraryTrackIds, ...trackIds]))
-  }
-  const handleRemoveTrackFromLibrary = async trackIds => {
-    await libraryTracksRemove({ trackIds, albumId: id })
-    setLibraryTrackIds(state => {
-      const _libraryTrackIds = new Set(libraryTrackIds)
-      trackIds.forEach(id => _libraryTrackIds.delete(id))
-      return _libraryTrackIds
-    })
-  }
-
-  useEffect(() => {
-    const fetchLibAlTkIds = async () => {
-      setLibraryTrackIds(new Set(await libraryAlbumTrackIds({ id })))
-    }
-    fetchLibAlTkIds()
-  }, [])
 
   const tracksGrouped = []
   const group = []
@@ -67,10 +69,18 @@ const Album = () => {
           <div>{title}</div>
           <button onClick={() => handlePlayClick(0)}>▶</button>
           {libraryTrackIds.size === 0 && (
-            <button onClick={() => handleAddTracksToLibrary(tracks.map(t => t.id))}>➕</button>
+            <button
+              onClick={() => addTracksToLibrary({ albumId: id, trackIds: tracks.map(t => t.id) })}>
+              ➕
+            </button>
           )}
           {libraryTrackIds.size > 0 && (
-            <button onClick={() => handleRemoveTrackFromLibrary(tracks.map(t => t.id))}>➖</button>
+            <button
+              onClick={() =>
+                removeTracksFromLibrary({ albumId: id, trackIds: tracks.map(t => t.id) })
+              }>
+              ➖
+            </button>
           )}
         </div>
       </div>
@@ -98,11 +108,19 @@ const Album = () => {
                   <div key={track.id}>
                     <span onClick={() => handlePlayClick(track.track_number - 1)}>▶</span>
                     <span>{track.title}</span>
-                    {!libraryTrackIds.has(track.id) && (
-                      <button onClick={() => handleAddTracksToLibrary([track.id])}>➕</button>
+                    {!libraryTrackIds.get(id)?.has(track.id) && (
+                      <button
+                        onClick={() => addTracksToLibrary({ albumId: id, trackIds: [track.id] })}>
+                        ➕
+                      </button>
                     )}
-                    {libraryTrackIds.has(track.id) && (
-                      <button onClick={() => handleRemoveTrackFromLibrary([track.id])}>➖</button>
+                    {libraryTrackIds.get(id)?.has(track.id) && (
+                      <button
+                        onClick={() =>
+                          removeTracksFromLibrary({ albumId: id, trackIds: [track.id] })
+                        }>
+                        ➖
+                      </button>
                     )}
                   </div>
                 ))}

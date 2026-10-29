@@ -16,6 +16,9 @@ const Menubar = () => {
           <div className="text-zinc-400">媒体库</div>
           <div>
             <div>
+              <NavLink to="library/albums">专辑</NavLink>
+            </div>
+            <div>
               <NavLink to="library/tracks">曲目</NavLink>
             </div>
           </div>

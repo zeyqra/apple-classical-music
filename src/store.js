@@ -52,34 +52,48 @@ const useStore = create((set, get) => ({
   setShowFullPlayer: showFullPlayer => set({ showFullPlayer }),
 
   // 资料库
-  // albumIds: new Set(),
-  // albumTrackIds: new Set(),
-  // fetchLibraryTracks: async () => {
-  //   const tracks = await libraryTracks()
-  //   set({ albumIds: new Set(tracks.map(tk => tk.album_id)) })
-  //   set({ albumTrackIds: new Set(tracks.map(tk => `${tk.album_id}:${tk.id}`)) })
-  // },
-  // addTracksToLibrary: async ({ trackIds, albumId }) => {
-  //   await libraryTracksAdd({ trackIds, albumId })
-  //   set(state => ({ albumIds: new Set(...state.albumIds, albumId) }))
-  //   set(state => ({
-  //     albumTrackIds: new Set(...state.albumTrackIds, ...trackIds.map(tkId => `${albumId}:${tkId}`)),
-  //   }))
-  // },
-  // removeTracksFromLibrary: async ({ trackIds, albumId }) => {
-  //   await libraryTracksRemove({ trackIds, albumId })
-  //   set(state => {
-  //     const albumTrackIds = new Set(state.albumTrackIds)
-  //     trackIds.forEach(tkId => albumTrackIds.delete(`${albumId}:${tkId}`))
+  libraryTrackIds: new Map(),
+  setLibraryTracks: async () => {
+    const tracks = await libraryTracks()
+    const libraryTrackIds = new Map()
+    tracks.forEach(tk => {
+      if (!libraryTrackIds.has(tk.album_id)) {
+        libraryTrackIds.set(tk.album_id, new Set())
+      }
+      libraryTrackIds.get(tk.album_id).add(tk.id)
+    })
+    set({ libraryTrackIds })
+  },
+  addTracksToLibrary: async data => {
+    const { trackIds, albumId } = await libraryTracksAdd(data)
 
-  //     const albumIds = new Set(state.albumIds)
-  //     if (![...albumTrackIds].some(atId => atId.startWith(`${albumId}:`))) {
-  //       albumIds.delete(albumId)
-  //     }
+    set(state => {
+      const libraryTrackIds = new Map(state.libraryTrackIds)
+      const libTkIdsAl = new Set(state.libraryTrackIds.get(albumId) || [])
 
-  //     return { albumTrackIds, albumIds }
-  //   })
-  // },
+      trackIds.forEach(tkId => libTkIdsAl.add(tkId))
+      libraryTrackIds.set(albumId, libTkIdsAl)
+
+      return { libraryTrackIds }
+    })
+  },
+  removeTracksFromLibrary: async data => {
+    const { trackIds, albumId } = await libraryTracksRemove(data)
+    set(state => {
+      const libraryTrackIds = new Map(state.libraryTrackIds)
+      const libTkIdsAl = new Set(state.libraryTrackIds.get(albumId))
+
+      trackIds.forEach(tkId => libTkIdsAl.delete(tkId))
+
+      if (libTkIdsAl.size === 0) {
+        libraryTrackIds.delete(albumId)
+      } else {
+        libraryTrackIds.set(albumId, libTkIdsAl)
+      }
+
+      return { libraryTrackIds }
+    })
+  },
 }))
 
 export default useStore

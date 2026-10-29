@@ -6,6 +6,7 @@ import Header from './components/Header'
 import Home from './pages/Home'
 import Album from './pages/Album'
 import LibraryTracks from './pages/LibraryTracks'
+import LibraryAlbums from './pages/LibraryAlbums'
 
 const router = createBrowserRouter([
   {
@@ -19,6 +20,10 @@ const router = createBrowserRouter([
       {
         path: 'album/:id',
         element: <Album />,
+      },
+      {
+        path: '/library/albums',
+        element: <LibraryAlbums />,
       },
       {
         path: '/library/tracks',
