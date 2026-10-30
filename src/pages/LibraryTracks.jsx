@@ -50,12 +50,12 @@ const LibraryTracks = () => {
               <p>
                 {recording.composer_name} {recording.work_title}
               </p>
-              <p>
+              {/* <p>
                 {Object.entries(recording.performers)
                   .filter(([_, pfs]) => pfs.length >= 1)
                   .map(([role, pfs]) => pfs.map(pf => pf.name).join(' / '))
                   .join(' / ')}
-              </p>
+              </p> */}
             </div>
             {/* 录音乐章 */}
             <div>

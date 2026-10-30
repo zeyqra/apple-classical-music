@@ -36,12 +36,12 @@ const Header = () => {
                 <div>
                   {track.work_title} - {track.title}
                 </div>
-                <div>
+                {/* <div>
                   {Object.entries(track.performers)
                     .filter(([_, pfs]) => pfs.length >= 1)
                     .map(([role, pfs]) => pfs.map(pf => pf.name).join(' / '))
                     .join(' / ')}
-                </div>
+                </div> */}
               </div>
 
               {/* 进度条 */}

@@ -56,12 +56,12 @@ const Queue = () => {
                   <p>{recording.composer_name}</p>
                   <p>{recording.work_title}</p>
                 </div>
-                <p>
+                {/* <p>
                   {Object.entries(recording.performers)
                     .filter(([_, pfs]) => pfs.length >= 1)
                     .map(([role, pfs]) => pfs.map(pf => pf.name).join(' / '))
                     .join(' / ')}
-                </p>
+                </p> */}
               </div>
               {/* 录音乐章 */}
               <div>

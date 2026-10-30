@@ -2,6 +2,7 @@ import { useParams } from 'react-router-dom'
 import { album } from '../api.js'
 import { useQuery } from '../hooks.js'
 import useStore from '../store.js'
+import DropMenu from '../components/DropMenu.jsx'
 
 const Album = () => {
   const { id: rawId } = useParams()
@@ -9,9 +10,6 @@ const Album = () => {
   const { result } = useQuery(album, { id })
   const { tracks = [], title = '' } = result || {}
   const play = useStore(state => state.play)
-  const libraryTrackIds = useStore(state => state.libraryTrackIds)
-  const addTracksToLibrary = useStore(state => state.addTracksToLibrary)
-  const removeTracksFromLibrary = useStore(state => state.removeTracksFromLibrary)
 
   // const [libraryTrackIds, setLibraryTrackIds] = useState(new Set())
   // const handleAddTracksToLibrary = async trackIds => {
@@ -33,7 +31,6 @@ const Album = () => {
   //   fetchLibAlTkIds()
   // }, [])
 
-  console.log('console: ids', libraryTrackIds)
   const handlePlayClick = index => {
     play(tracks, index)
   }
@@ -68,20 +65,7 @@ const Album = () => {
         <div>
           <div>{title}</div>
           <button onClick={() => handlePlayClick(0)}>▶</button>
-          {libraryTrackIds.size === 0 && (
-            <button
-              onClick={() => addTracksToLibrary({ albumId: id, trackIds: tracks.map(t => t.id) })}>
-              ➕
-            </button>
-          )}
-          {libraryTrackIds.size > 0 && (
-            <button
-              onClick={() =>
-                removeTracksFromLibrary({ albumId: id, trackIds: tracks.map(t => t.id) })
-              }>
-              ➖
-            </button>
-          )}
+          <DropMenu type="album" albumId={id} trackIds={tracks.map(t => t.id)} />
         </div>
       </div>
       {/* 专辑音轨 */}
@@ -95,12 +79,12 @@ const Album = () => {
                 <p>
                   {recording.composer_name} {recording.work_title}
                 </p>
-                <p>
+                {/* <p>
                   {Object.entries(recording.performers)
                     .filter(([_, pfs]) => pfs.length >= 1)
                     .map(([role, pfs]) => pfs.map(pf => pf.name).join(' / '))
                     .join(' / ')}
-                </p>
+                </p> */}
               </div>
               {/* 录音乐章 */}
               <div>
@@ -108,20 +92,7 @@ const Album = () => {
                   <div key={track.id}>
                     <span onClick={() => handlePlayClick(track.track_number - 1)}>▶</span>
                     <span>{track.title}</span>
-                    {!libraryTrackIds.get(id)?.has(track.id) && (
-                      <button
-                        onClick={() => addTracksToLibrary({ albumId: id, trackIds: [track.id] })}>
-                        ➕
-                      </button>
-                    )}
-                    {libraryTrackIds.get(id)?.has(track.id) && (
-                      <button
-                        onClick={() =>
-                          removeTracksFromLibrary({ albumId: id, trackIds: [track.id] })
-                        }>
-                        ➖
-                      </button>
-                    )}
+                    <DropMenu type="track" albumId={id} trackIds={[track.id]} />
                   </div>
                 ))}
               </div>
