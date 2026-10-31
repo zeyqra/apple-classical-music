@@ -41,7 +41,6 @@ const Dropdown = ({ trigger, menu }) => {
         setIsOpen(false)
       }
 
-      console.log('console: ', e.target.className)
       if (e.target.closest('.dropdown-menu')) {
         setIsOpen(false)
       }
@@ -63,7 +62,7 @@ const Dropdown = ({ trigger, menu }) => {
       <div
         ref={menuRef}
         style={menuStyle}
-        className={`text-sm dropdown-menu bg-white cursor-default border border-zinc-500 fixed w-max whitespace-nowrap ${isOpen ? 'block' : 'hidden'}`}>
+        className={`dropdown-menu bg-white cursor-default border border-zinc-500 fixed w-max whitespace-nowrap ${isOpen ? 'block' : 'hidden'}`}>
         {menu}
       </div>
     </div>
