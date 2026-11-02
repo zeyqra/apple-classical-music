@@ -71,7 +71,7 @@ const DropMenu = ({ type, albumId, trackIds, playFn }) => {
                   <h3>新播放列表</h3>
                   <input className="block" type="text" placeholder="播放列表标题" />
                   <input className="block" type="text" placeholder="简介（选填）" />
-                  <button>取消</button>
+                  <button onClick={() => setIsDialogOpen(false)}>取消</button>
                   <button onClick={handleCreateClick}>创建</button>
                 </Dialog>
               </div>

@@ -73,7 +73,7 @@ const Album = () => {
         {tracksGrouped.map(({ recording, tracks }) => {
           return (
             // 录音组
-            <div key={recording.id}>
+            <div key={tracks[0].id}>
               {/* 录音标题 */}
               <div>
                 <p>

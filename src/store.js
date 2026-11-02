@@ -1,5 +1,15 @@
 import { create } from 'zustand'
-import { libraryTracks, libraryTracksAdd, libraryTracksRemove } from './api'
+import {
+  libraryTracks,
+  libraryTracksAdd,
+  libraryTracksRemove,
+  createdPlaylist,
+  collectPlaylist,
+  playlistCreated,
+  playlistCollected,
+  addTrackToPlaylist,
+  removeTrackFromPlaylist,
+} from './api'
 
 const useStore = create((set, get) => ({
   // 播放器
@@ -94,6 +104,34 @@ const useStore = create((set, get) => ({
       return { libraryTrackIds }
     })
   },
+
+  // 收藏
+  // playlistCollectedIds: [],
+  // setPlaylistCollectedIds: async () => {
+  //   const playlistCollected = await playlistCollected()
+  //   set({ playlistCollectedIds: playlistCollected.map(p => p.id) })
+  // },
+  // collectPlaylist: async data => {
+  //   const { id, type } = await collectPlaylist(data)
+  //   if (type)
+  //     set(state => ({ playlistCollectedIds: state.playlistCollectedIds.filter(pid => pid === id) }))
+  //   else set(state => ({ playlistCollectedIds: [...state.playlistCollectedIds, id] }))
+  // },
+  // 创建的播放列表
+  playlistCreated: [],
+  setPlaylistCreated: async () => {
+    const playlistCreated = await playlistCreated()
+    set({ playlistCreated })
+  },
+  removePlaylistCreated: async () => {
+    const playlistCreated = await playlistCreated()
+    set({ playlistCreated })
+  // addTrackToPlaylist: async data => {
+  //   const {id, trackIds} = addTrackToPlaylist(data)
+  // },
+  // removeTrackFromPlaylist: async data => {
+  //   removeTrackFromPlaylist(data)
+  // },
 }))
 
 export default useStore
