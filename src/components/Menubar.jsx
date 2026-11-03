@@ -23,6 +23,12 @@ const Menubar = () => {
             </div>
           </div>
         </div>
+        {/* 创建的播放列表 */}
+        <div className="mt-4">
+          <div>
+            <NavLink to="/playlists">创建的播放列表</NavLink>
+          </div>
+        </div>
       </div>
     </div>
   )

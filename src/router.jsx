@@ -7,6 +7,7 @@ import Home from './pages/Home'
 import Album from './pages/Album'
 import LibraryTracks from './pages/LibraryTracks'
 import LibraryAlbums from './pages/LibraryAlbums'
+import PlaylistsCreated from './pages/PlaylistsCreated'
 
 const router = createBrowserRouter([
   {
@@ -28,6 +29,10 @@ const router = createBrowserRouter([
       {
         path: '/library/tracks',
         element: <LibraryTracks />,
+      },
+      {
+        path: '/playlists',
+        element: <PlaylistsCreated />,
       },
     ],
   },

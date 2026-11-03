@@ -3,6 +3,7 @@ import Dropdown from './Dropdown'
 import Hoverdown from './Hoverdown'
 import Dialog from './Dialog'
 import { useState } from 'react'
+import { addTrackToPlaylist, removeTrackFromPlaylist, collectPlaylist } from '../api'
 // 专辑 | 播放列表 | 曲目 | 录音
 // 播放
 // 添加到资料库
@@ -13,13 +14,15 @@ import { useState } from 'react'
 // 前往作品
 // 个人收藏
 
-const DropMenu = ({ type, albumId, trackIds, playFn }) => {
+const DropMenu = ({ type, albumId, trackIds, playlistId, playFn }) => {
   const libraryTrackIds = useStore(state => state.libraryTrackIds)
   const addTracksToLibrary = useStore(state => state.addTracksToLibrary)
   const removeTracksFromLibrary = useStore(state => state.removeTracksFromLibrary)
+  const playlistCreated = useStore(state => state.playlistCreated)
+  const createPlaylist = useStore(state => state.createPlaylist)
+  const removePlaylist = useStore(state => state.removePlaylist)
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [dialogTitle, setDialogTitle] = useState('')
-  const [dialogDes, setIsDialogDes] = useState('')
 
   const handleAddToLibrary = () => {
     // if (type === 'track') {
@@ -36,9 +39,17 @@ const DropMenu = ({ type, albumId, trackIds, playFn }) => {
     setIsDialogOpen(true)
   }
 
-  const handleCreateClick = () => {
+  const handleCreateClick = async () => {
     console.log('console: create clcik')
-    // await 创建新播放列表
+    const playlist = await createPlaylist({ title: dialogTitle })
+    if (type === 'album') {
+      await addTrackToPlaylist({ id: playlist.id, albumId })
+    }
+    // await 音轨数组加入到播放列表
+    // setIsDialogOpen(false)
+  }
+  const handleDeletePlaylist = async () => {
+    const playlist = await removePlaylist({ id: playlistId })
     // await 音轨数组加入到播放列表
     // setIsDialogOpen(false)
   }
@@ -69,14 +80,23 @@ const DropMenu = ({ type, albumId, trackIds, playFn }) => {
                 <div onClick={handleOpenDialog}>新建播放列表</div>
                 <Dialog isOpen={isDialogOpen} onClose={() => setIsDialogOpen(false)}>
                   <h3>新播放列表</h3>
-                  <input className="block" type="text" placeholder="播放列表标题" />
-                  <input className="block" type="text" placeholder="简介（选填）" />
+                  <input
+                    className="block"
+                    type="text"
+                    onChange={e => setDialogTitle(e.target.value)}
+                    placeholder="播放列表标题"
+                  />
                   <button onClick={() => setIsDialogOpen(false)}>取消</button>
                   <button onClick={handleCreateClick}>创建</button>
                 </Dialog>
+                {playlistCreated.map(p => (
+                  <div key={p.id}>{p.title || '无'}</div>
+                ))}
               </div>
             }
           />
+
+          {type === 'playlist' && <div onClick={handleDeletePlaylist}>删除播放列表</div>}
         </div>
       }
     />

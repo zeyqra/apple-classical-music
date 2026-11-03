@@ -3,12 +3,13 @@ import {
   libraryTracks,
   libraryTracksAdd,
   libraryTracksRemove,
-  createdPlaylist,
-  collectPlaylist,
-  playlistCreated,
-  playlistCollected,
-  addTrackToPlaylist,
-  removeTrackFromPlaylist,
+  createPlaylist as createPlaylistApi,
+  removePlaylist as removePlaylistApi,
+  collectPlaylist as collectPlaylistApi,
+  playlistCreated as playlistCreatedApi,
+  playlistCollected as playlistCollectedApi,
+  addTrackToPlaylist as addTrackToPlaylistApi,
+  removeTrackFromPlaylist as removeTrackFromPlaylistApi,
 } from './api'
 
 const useStore = create((set, get) => ({
@@ -84,6 +85,7 @@ const useStore = create((set, get) => ({
       trackIds.forEach(tkId => libTkIdsAl.add(tkId))
       libraryTrackIds.set(albumId, libTkIdsAl)
 
+      console.log('console: libraryTrackIds', libraryTrackIds)
       return { libraryTrackIds }
     })
   },
@@ -120,12 +122,23 @@ const useStore = create((set, get) => ({
   // 创建的播放列表
   playlistCreated: [],
   setPlaylistCreated: async () => {
-    const playlistCreated = await playlistCreated()
+    const playlistCreated = await playlistCreatedApi()
     set({ playlistCreated })
   },
-  removePlaylistCreated: async () => {
-    const playlistCreated = await playlistCreated()
-    set({ playlistCreated })
+  createPlaylist: async data => {
+    const newPlaylist = await createPlaylistApi(data)
+    set(state => ({ playlistCreated: [...state.playlistCreated, newPlaylist] }))
+    return newPlaylist
+  },
+  removePlaylist: async data => {
+    const { id } = await removePlaylistApi(data)
+    console.log('console: ', id)
+    console.log(
+      'console: ',
+      get().playlistCreated.filter(p => p.id !== id)
+    )
+    set(state => ({ playlistCreated: state.playlistCreated.filter(p => p.id !== id) }))
+  },
   // addTrackToPlaylist: async data => {
   //   const {id, trackIds} = addTrackToPlaylist(data)
   // },

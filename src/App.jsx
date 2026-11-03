@@ -5,7 +5,9 @@ import useStore from './store'
 
 function App() {
   const setLibraryTracks = useStore(state => state.setLibraryTracks)
+  const setPlaylistCreated = useStore(state => state.setPlaylistCreated)
   setLibraryTracks()
+  setPlaylistCreated()
   return (
     <div>
       <PlayerProvider>
