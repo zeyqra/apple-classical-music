@@ -1,8 +1,7 @@
-import { useEffect } from 'react'
 import useStore from '../store'
 import { useQuery } from '../hooks'
 import { playlist } from '../api'
-import DropMenu from '../components/DropMenu'
+import ActionsMenu from '../components/ActionsMenu'
 
 const PlaylistsCreated = () => {
   const playlistCreated = useStore(state => state.playlistCreated)
@@ -19,7 +18,7 @@ const PlaylistsCreated = () => {
       {/* 详情 */}
       <div className="grow">
         <div>{one.title || '无'}</div>
-        <DropMenu type="playlist" playlistId={one.id} />
+        <ActionsMenu type="playlist" playlist={one} />
         <div>
           {result?.tracks?.map(t => (
             <div>{t.title}</div>

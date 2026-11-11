@@ -132,19 +132,8 @@ const useStore = create((set, get) => ({
   },
   removePlaylist: async data => {
     const { id } = await removePlaylistApi(data)
-    console.log('console: ', id)
-    console.log(
-      'console: ',
-      get().playlistCreated.filter(p => p.id !== id)
-    )
     set(state => ({ playlistCreated: state.playlistCreated.filter(p => p.id !== id) }))
   },
-  // addTrackToPlaylist: async data => {
-  //   const {id, trackIds} = addTrackToPlaylist(data)
-  // },
-  // removeTrackFromPlaylist: async data => {
-  //   removeTrackFromPlaylist(data)
-  // },
 }))
 
 export default useStore

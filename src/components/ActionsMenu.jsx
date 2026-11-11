@@ -1,6 +1,6 @@
 import useStore from '../store'
-import Dropdown from './Dropdown'
-import Hoverdown from './Hoverdown'
+import Dropdown from './ClickMenu'
+import Hoverdown from './HoverMenu'
 import Dialog from './Dialog'
 import { useState } from 'react'
 import { addTrackToPlaylist, removeTrackFromPlaylist, collectPlaylist } from '../api'
@@ -14,7 +14,7 @@ import { addTrackToPlaylist, removeTrackFromPlaylist, collectPlaylist } from '..
 // 前往作品
 // 个人收藏
 
-const DropMenu = ({ type, albumId, trackIds, playlistId, playFn }) => {
+const ActionsMenu = ({ type, albumId, trackIds, playlist, playFn }) => {
   const libraryTrackIds = useStore(state => state.libraryTrackIds)
   const addTracksToLibrary = useStore(state => state.addTracksToLibrary)
   const removeTracksFromLibrary = useStore(state => state.removeTracksFromLibrary)
@@ -40,18 +40,15 @@ const DropMenu = ({ type, albumId, trackIds, playlistId, playFn }) => {
   }
 
   const handleCreateClick = async () => {
-    console.log('console: create clcik')
-    const playlist = await createPlaylist({ title: dialogTitle })
-    if (type === 'album') {
-      await addTrackToPlaylist({ id: playlist.id, albumId })
-    }
-    // await 音轨数组加入到播放列表
-    // setIsDialogOpen(false)
+    const newPlaylist = await createPlaylist({ title: dialogTitle })
+    handleAddToPlaylist(newPlaylist.id)
+  }
+  const handleAddToPlaylist = async targetId => {
+    const orgId = albumId || playlist.id || trackIds[0].id
+    await addTrackToPlaylist({ id: targetId, orgId, type })
   }
   const handleDeletePlaylist = async () => {
-    const playlist = await removePlaylist({ id: playlistId })
-    // await 音轨数组加入到播放列表
-    // setIsDialogOpen(false)
+    await removePlaylist({ id: playlist?.id })
   }
 
   let isInLibrary = false
@@ -67,7 +64,7 @@ const DropMenu = ({ type, albumId, trackIds, playlistId, playFn }) => {
         <div>
           {playFn && <div onClick={playFn}>播放</div>}
 
-          {isInLibrary ? (
+          {type === 'playlist' ? null : isInLibrary ? (
             <div onClick={handleRemoveFromLibrary}>从资料库删除</div>
           ) : (
             <div onClick={handleAddToLibrary}>添加到资料库</div>
@@ -90,17 +87,21 @@ const DropMenu = ({ type, albumId, trackIds, playlistId, playFn }) => {
                   <button onClick={handleCreateClick}>创建</button>
                 </Dialog>
                 {playlistCreated.map(p => (
-                  <div key={p.id}>{p.title || '无'}</div>
+                  <div key={p.id} onClick={() => handleAddToPlaylist(p.id)}>
+                    {p.title || '无'}
+                  </div>
                 ))}
               </div>
             }
           />
 
-          {type === 'playlist' && <div onClick={handleDeletePlaylist}>删除播放列表</div>}
+          {type === 'playlist' && playlist?.user_id === 1 && (
+            <div onClick={handleDeletePlaylist}>删除播放列表</div>
+          )}
         </div>
       }
     />
   )
 }
 
-export default DropMenu
+export default ActionsMenu

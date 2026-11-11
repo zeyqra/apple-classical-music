@@ -18,6 +18,8 @@ export const createPlaylist = data => post('/playlist/create', data)
 export const removePlaylist = data => del('/playlist/create', data)
 // 获取用户创建的播放列表
 export const playlistCreated = () => get('/playlist/create')
+// 获取官方播放列表
+export const playlistOffical = () => get('/playlist/offical')
 // 将曲目添加到播放列表
 export const addTrackToPlaylist = data => post('/playlist/tracks', data)
 // 将曲目从播放列表移除

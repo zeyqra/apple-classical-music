@@ -2,7 +2,7 @@ import { useParams } from 'react-router-dom'
 import { album } from '../api.js'
 import { useQuery } from '../hooks.js'
 import useStore from '../store.js'
-import DropMenu from '../components/DropMenu.jsx'
+import ActionsMenu from '../components/ActionsMenu.jsx'
 
 const Album = () => {
   const { id: rawId } = useParams()
@@ -65,7 +65,7 @@ const Album = () => {
         <div>
           <div>{title}</div>
           <button onClick={() => handlePlayClick(0)}>▶</button>
-          <DropMenu type="album" albumId={id} trackIds={tracks.map(t => t.id)} />
+          <ActionsMenu type="album" albumId={id} trackIds={tracks.map(t => t.id)} />
         </div>
       </div>
       {/* 专辑音轨 */}
@@ -92,7 +92,7 @@ const Album = () => {
                   <div key={track.id}>
                     <span onClick={() => handlePlayClick(track.track_number - 1)}>▶</span>
                     <span>{track.title}</span>
-                    <DropMenu type="track" albumId={id} trackIds={[track.id]} />
+                    <ActionsMenu type="track" albumId={id} trackIds={[track.id]} />
                   </div>
                 ))}
               </div>

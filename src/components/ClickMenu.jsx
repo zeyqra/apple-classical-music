@@ -1,6 +1,6 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 
-const Dropdown = ({ trigger, menu }) => {
+const ClickMenu = ({ trigger, menu }) => {
   const triggerRef = useRef(null)
   const menuRef = useRef(null)
   const [isOpen, setIsOpen] = useState(false)
@@ -69,4 +69,4 @@ const Dropdown = ({ trigger, menu }) => {
   )
 }
 
-export default Dropdown
+export default ClickMenu
