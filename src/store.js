@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import {
+import api, {
   libraryTracks,
   libraryTracksAdd,
   libraryTracksRemove,
@@ -133,6 +133,12 @@ const useStore = create((set, get) => ({
   removePlaylist: async data => {
     const { id } = await removePlaylistApi(data)
     set(state => ({ playlistCreated: state.playlistCreated.filter(p => p.id !== id) }))
+  },
+
+  createdPlaylists: [],
+  setCreatedPlaylist: async () => {
+    const createdPlaylists = await api.createdPlaylists()
+    set({ createdPlaylists })
   },
 }))
 
