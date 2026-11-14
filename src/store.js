@@ -21,7 +21,7 @@ const useStore = create((set, get) => ({
   index: 0,
   mode: 'listLoop',
   sameIndexAndIdButReStart: 0,
-  play: (queue, index = 0) => {
+  playAlbumOrPlaylist: ({ queue, index = 0 }) => {
     // const state = get()
     // 点击专辑或歌曲播放后，仍有可能 index、id不变
     // const oldIndex = state.index
@@ -31,10 +31,7 @@ const useStore = create((set, get) => ({
     //   set(state => ({ sameIndexAndIdButReStart: state.sameIndexAndIdButReStart + 1 }))
     //   return
     // }
-    set(() => ({
-      queue,
-      index,
-    }))
+    set(() => ({ queue, index, isPlay: true }))
   },
   setIndex: index => set(() => ({ index })),
   setQueue: queue => set(() => ({ queue })),
@@ -125,11 +122,11 @@ const useStore = create((set, get) => ({
     const playlistCreated = await playlistCreatedApi()
     set({ playlistCreated })
   },
-  createPlaylist: async data => {
-    const newPlaylist = await createPlaylistApi(data)
-    set(state => ({ playlistCreated: [...state.playlistCreated, newPlaylist] }))
-    return newPlaylist
-  },
+  // createPlaylist: async data => {
+  //   const newPlaylist = await createPlaylistApi(data)
+  //   set(state => ({ playlistCreated: [...state.playlistCreated, newPlaylist] }))
+  //   return newPlaylist
+  // },
   removePlaylist: async data => {
     const { id } = await removePlaylistApi(data)
     set(state => ({ playlistCreated: state.playlistCreated.filter(p => p.id !== id) }))
@@ -139,6 +136,12 @@ const useStore = create((set, get) => ({
   setCreatedPlaylist: async () => {
     const createdPlaylists = await api.createdPlaylists()
     set({ createdPlaylists })
+  },
+  createPlaylist: async data => {
+    const result = await api.createPlaylist(data)
+    set(state => ({
+      createdPlaylists: [result, ...state.createdPlaylists],
+    }))
   },
 }))
 
