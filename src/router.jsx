@@ -4,10 +4,10 @@ import Menubar from './components/Menubar'
 import SideBar from './components/Sidebar'
 import Header from './components/Header'
 import Home from './pages/Home'
-import Album from './pages/Album'
-import LibraryTracks from './pages/LibraryTracks'
-import LibraryAlbums from './pages/LibraryAlbums'
-import PlaylistsCreated from './pages/PlaylistsCreated'
+// import Album from './pages/Album'
+// import LibraryTracks from './pages/LibraryTracks'
+// import LibraryAlbums from './pages/LibraryAlbums'
+// import PlaylistsCreated from './pages/PlaylistsCreated'
 
 const router = createBrowserRouter([
   {
@@ -18,22 +18,22 @@ const router = createBrowserRouter([
         index: true,
         element: <Home />,
       },
-      {
-        path: 'album/:id',
-        element: <Album />,
-      },
-      {
-        path: '/library/albums',
-        element: <LibraryAlbums />,
-      },
-      {
-        path: '/library/tracks',
-        element: <LibraryTracks />,
-      },
-      {
-        path: '/playlists',
-        element: <PlaylistsCreated />,
-      },
+      // {
+      //   path: 'album/:id',
+      //   element: <Album />,
+      // },
+      // {
+      //   path: '/library/albums',
+      //   element: <LibraryAlbums />,
+      // },
+      // {
+      //   path: '/library/tracks',
+      //   element: <LibraryTracks />,
+      // },
+      // {
+      //   path: '/playlists',
+      //   element: <PlaylistsCreated />,
+      // },
     ],
   },
 ])

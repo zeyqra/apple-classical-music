@@ -1,16 +1,5 @@
 import { create } from 'zustand'
-import api, {
-  libraryTracks,
-  libraryTracksAdd,
-  libraryTracksRemove,
-  createPlaylist as createPlaylistApi,
-  removePlaylist as removePlaylistApi,
-  collectPlaylist as collectPlaylistApi,
-  playlistCreated as playlistCreatedApi,
-  playlistCollected as playlistCollectedApi,
-  addTrackToPlaylist as addTrackToPlaylistApi,
-  removeTrackFromPlaylist as removeTrackFromPlaylistApi,
-} from './api'
+import api from './api'
 
 const useStore = create((set, get) => ({
   // 播放器
@@ -60,49 +49,49 @@ const useStore = create((set, get) => ({
   setShowFullPlayer: showFullPlayer => set({ showFullPlayer }),
 
   // 资料库
-  libraryTrackIds: new Map(),
-  setLibraryTracks: async () => {
-    const tracks = await libraryTracks()
-    const libraryTrackIds = new Map()
-    tracks.forEach(tk => {
-      if (!libraryTrackIds.has(tk.album_id)) {
-        libraryTrackIds.set(tk.album_id, new Set())
-      }
-      libraryTrackIds.get(tk.album_id).add(tk.id)
-    })
-    set({ libraryTrackIds })
-  },
-  addTracksToLibrary: async data => {
-    const { trackIds, albumId } = await libraryTracksAdd(data)
+  // libraryTrackIds: new Map(),
+  // setLibraryTracks: async () => {
+  //   const tracks = await libraryTracks()
+  //   const libraryTrackIds = new Map()
+  //   tracks.forEach(tk => {
+  //     if (!libraryTrackIds.has(tk.album_id)) {
+  //       libraryTrackIds.set(tk.album_id, new Set())
+  //     }
+  //     libraryTrackIds.get(tk.album_id).add(tk.id)
+  //   })
+  //   set({ libraryTrackIds })
+  // },
+  // addTracksToLibrary: async data => {
+  //   const { trackIds, albumId } = await libraryTracksAdd(data)
 
-    set(state => {
-      const libraryTrackIds = new Map(state.libraryTrackIds)
-      const libTkIdsAl = new Set(state.libraryTrackIds.get(albumId) || [])
+  //   set(state => {
+  //     const libraryTrackIds = new Map(state.libraryTrackIds)
+  //     const libTkIdsAl = new Set(state.libraryTrackIds.get(albumId) || [])
 
-      trackIds.forEach(tkId => libTkIdsAl.add(tkId))
-      libraryTrackIds.set(albumId, libTkIdsAl)
+  //     trackIds.forEach(tkId => libTkIdsAl.add(tkId))
+  //     libraryTrackIds.set(albumId, libTkIdsAl)
 
-      console.log('console: libraryTrackIds', libraryTrackIds)
-      return { libraryTrackIds }
-    })
-  },
-  removeTracksFromLibrary: async data => {
-    const { trackIds, albumId } = await libraryTracksRemove(data)
-    set(state => {
-      const libraryTrackIds = new Map(state.libraryTrackIds)
-      const libTkIdsAl = new Set(state.libraryTrackIds.get(albumId))
+  //     console.log('console: libraryTrackIds', libraryTrackIds)
+  //     return { libraryTrackIds }
+  //   })
+  // },
+  // removeTracksFromLibrary: async data => {
+  //   const { trackIds, albumId } = await libraryTracksRemove(data)
+  //   set(state => {
+  //     const libraryTrackIds = new Map(state.libraryTrackIds)
+  //     const libTkIdsAl = new Set(state.libraryTrackIds.get(albumId))
 
-      trackIds.forEach(tkId => libTkIdsAl.delete(tkId))
+  //     trackIds.forEach(tkId => libTkIdsAl.delete(tkId))
 
-      if (libTkIdsAl.size === 0) {
-        libraryTrackIds.delete(albumId)
-      } else {
-        libraryTrackIds.set(albumId, libTkIdsAl)
-      }
+  //     if (libTkIdsAl.size === 0) {
+  //       libraryTrackIds.delete(albumId)
+  //     } else {
+  //       libraryTrackIds.set(albumId, libTkIdsAl)
+  //     }
 
-      return { libraryTrackIds }
-    })
-  },
+  //     return { libraryTrackIds }
+  //   })
+  // },
 
   // 收藏
   // playlistCollectedIds: [],
@@ -117,22 +106,23 @@ const useStore = create((set, get) => ({
   //   else set(state => ({ playlistCollectedIds: [...state.playlistCollectedIds, id] }))
   // },
   // 创建的播放列表
-  playlistCreated: [],
-  setPlaylistCreated: async () => {
-    const playlistCreated = await playlistCreatedApi()
-    set({ playlistCreated })
-  },
-  // createPlaylist: async data => {
-  //   const newPlaylist = await createPlaylistApi(data)
-  //   set(state => ({ playlistCreated: [...state.playlistCreated, newPlaylist] }))
-  //   return newPlaylist
+  // playlistCreated: [],
+  // setPlaylistCreated: async () => {
+  //   const playlistCreated = await playlistCreatedApi()
+  //   set({ playlistCreated })
   // },
-  removePlaylist: async data => {
-    const { id } = await removePlaylistApi(data)
-    set(state => ({ playlistCreated: state.playlistCreated.filter(p => p.id !== id) }))
-  },
+  // // createPlaylist: async data => {
+  // //   const newPlaylist = await createPlaylistApi(data)
+  // //   set(state => ({ playlistCreated: [...state.playlistCreated, newPlaylist] }))
+  // //   return newPlaylist
+  // // },
+  // removePlaylist: async data => {
+  //   const { id } = await removePlaylistApi(data)
+  //   set(state => ({ playlistCreated: state.playlistCreated.filter(p => p.id !== id) }))
+  // },
 
   createdPlaylists: [],
+  hasSetCreatedPlaylist: false,
   setCreatedPlaylist: async () => {
     const createdPlaylists = await api.createdPlaylists()
     set({ createdPlaylists })

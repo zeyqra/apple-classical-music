@@ -12,7 +12,7 @@ const Menubar = () => {
           <NavLink to="/">主页</NavLink>
         </div>
         {/* 媒体库 */}
-        <div>
+        {/* <div>
           <div className="text-zinc-400">媒体库</div>
           <div>
             <div>
@@ -22,13 +22,13 @@ const Menubar = () => {
               <NavLink to="library/tracks">曲目</NavLink>
             </div>
           </div>
-        </div>
+        </div> */}
         {/* 创建的播放列表 */}
-        <div className="mt-4">
+        {/* <div className="mt-4">
           <div>
             <NavLink to="/playlists">创建的播放列表</NavLink>
           </div>
-        </div>
+        </div> */}
       </div>
     </div>
   )
