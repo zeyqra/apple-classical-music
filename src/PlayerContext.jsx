@@ -11,7 +11,7 @@ export const PlayerProvider = ({ children }) => {
 
   const track = queue[index] || null
   const id = track?.id || null
-  const url = track?.track_url || null
+  const url = track?.audio_url || null
   // const { data: urlData = {} } = useSongUrlV1({ id, level: 'lossless' })
   // const url = urlData.data?.[0]?.url // undefined
   const isPlay = useStore(state => state.isPlay)

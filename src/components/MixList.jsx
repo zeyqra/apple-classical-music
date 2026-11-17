@@ -18,8 +18,12 @@ const MixList = () => {
       setMixList(pre =>
         pre.map(item => {
           if (item.type === target.type && target.id === item.id) {
-            item.isInLibrary = !item.isInLibrary
+            return {
+              ...item,
+              isInLibrary: !item.isInLibrary,
+            }
           }
+          return item
         })
       )
     } else if (action === 'favourite') {

@@ -37,7 +37,7 @@ export default {
   playlist: params => get(`/playlist/${params.id}`),
   addAlbumToLibrary: data => put('/library/album', data),
   removeAlbumFromLibrary: data => del('/library/album', data),
-  createPlaylist: () => post('/playlist/create'),
+  createPlaylist: data => post('/playlist/create', data),
   createdPlaylists: () => get('/playlist/create'),
   addAlbumToPlaylist: data => put('/playlist/album', data),
   addPlaylistToPlaylist: data => put('/playlist/playlist', data),

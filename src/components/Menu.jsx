@@ -4,7 +4,13 @@ import api from '../api'
 
 const Menu = ({ hasPlay, navigate, targetType, target, onSuccess }) => {
   const [isOpen, setIsOpen] = useState(false)
+  const [xy, setXy] = useState({ x: 0, y: 0 })
   const [newPlaylistTitle, setNewPlaylistTitle] = useState('New Playlist ' + new Date().getTime())
+
+  const handleTriggerClick = e => {
+    setXy({ x: e.clientX, y: e.clientY })
+    setIsOpen(prev => !prev)
+  }
 
   const createdPlaylists = useStore(state => state.createdPlaylists)
   const setCreatedPlaylist = useStore(state => state.setCreatedPlaylist)
@@ -22,25 +28,25 @@ const Menu = ({ hasPlay, navigate, targetType, target, onSuccess }) => {
   const favouritePlaylist = api.favouritePlaylist
   const unfavouritePlaylist = api.unfavouritePlaylist
 
-  const fetchPlayTracks =
-    targetType === 'album' ? fetchAlbum : targetType === 'playlist' ? fetchPlaylist : null
-  const addToLibrary = targetType === 'album' ? addAlbumToLibrary : null
-  const removeFromLibrary = targetType === 'album' ? removeAlbumFromLibrary : null
-  const addToPlaylist =
-    targetType === 'album'
-      ? addAlbumToPlaylist
-      : targetType === 'playlist'
-        ? addPlaylistToPlaylist
-        : null
-  const favorite =
-    targetType === 'album' ? favouriteAlbum : targetType === 'playlist' ? favouritePlaylist : null
-  const unfavourite =
-    targetType === 'album'
-      ? unfavouriteAlbum
-      : targetType === 'playlist'
-        ? unfavouritePlaylist
-        : null
-
+  let fetchPlayTracks, addToLibrary, removeFromLibrary, addToPlaylist, favourite, unfavourite
+  switch (targetType) {
+    case 'album':
+      fetchPlayTracks = fetchAlbum
+      addToLibrary = addAlbumToLibrary
+      removeFromLibrary = removeAlbumFromLibrary
+      addToPlaylist = addAlbumToPlaylist
+      favourite = favouriteAlbum
+      unfavourite = unfavouriteAlbum
+      break
+    case 'playlist':
+      fetchPlayTracks = fetchPlaylist
+      addToPlaylist = addPlaylistToPlaylist
+      favourite = favouritePlaylist
+      unfavourite = unfavouritePlaylist
+      break
+    default:
+      break
+  }
   useEffect(() => {
     if (!hasSetCreatedPlaylist) {
       useStore.setState({ hasSetCreatedPlaylist: true })
@@ -49,7 +55,7 @@ const Menu = ({ hasPlay, navigate, targetType, target, onSuccess }) => {
   }, [])
 
   const handlePlay = async () => {
-    playAlbumOrPlaylist({ queue: (await fetchPlayTracks).tracks })
+    playAlbumOrPlaylist({ queue: (await fetchPlayTracks({ id: target.id })).tracks })
   }
   const handleAddToLibrary = async () => {
     await addToLibrary({ id: target.id })
@@ -70,20 +76,20 @@ const Menu = ({ hasPlay, navigate, targetType, target, onSuccess }) => {
     onSuccess({ action: 'favourite', target })
   }
   const handleFavourite = async () => {
-    await favorite({ id: target.id })
+    await favourite({ id: target.id })
     onSuccess({ action: 'favourite', target })
   }
 
   return (
-    <div>
-      <button onClick={() => setIsOpen(prev => !prev)}>Menu</button>
+    <div className="inline-block">
+      <button onClick={handleTriggerClick}>Menu</button>
       {isOpen && (
-        <div>
+        <div className="fixed bg-white border-2" style={{ left: xy.x + 5, top: xy.y + 5 }}>
           {hasPlay && <div onClick={handlePlay}>Play</div>}
           {targetType === 'album' && !target.isInLibrary && (
             <div onClick={handleAddToLibrary}>Add to Library</div>
           )}
-          {targetType === 'album' && target.isInLibrary && (
+          {targetType === 'album' && !!target.isInLibrary && (
             <div onClick={handleRemoveFromLibrary}>Remove from Library</div>
           )}
 
@@ -96,8 +102,8 @@ const Menu = ({ hasPlay, navigate, targetType, target, onSuccess }) => {
               </div>
             ))}
           </div>
-          {target.isFavourite && <div onClick={handleUnfavourite}>Unfavourite</div>}
           {!target.isFavourite && <div onClick={handleFavourite}>Favourite</div>}
+          {!!target.isFavourite && <div onClick={handleUnfavourite}>Unfavourite</div>}
         </div>
       )}
     </div>
