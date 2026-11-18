@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import api from '../api'
 import Menu from './Menu'
+import { useNavigate } from 'react-router-dom'
 
 const MixList = () => {
   const [mixList, setMixList] = useState([])
@@ -40,11 +41,16 @@ const MixList = () => {
       )
     }
   }
+
+  const navigate = useNavigate()
+  const handleNavigateClick = ({ type, id }) => {
+    navigate(`/${type}/${id}`)
+  }
   return (
     <div>
       {mixList.map(item => (
         <div key={item.id + '-' + item.type}>
-          <span>{item.title}</span>
+          <span onClick={() => handleNavigateClick(item)}>{item.title} </span>
           <Menu hasPlay={true} targetType={item.type} target={item} onSuccess={handleMenuSuccess} />
         </div>
       ))}

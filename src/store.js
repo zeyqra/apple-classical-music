@@ -10,17 +10,17 @@ const useStore = create((set, get) => ({
   index: 0,
   mode: 'listLoop',
   sameIndexAndIdButReStart: 0,
-  playAlbumOrPlaylist: ({ queue, index = 0 }) => {
-    // const state = get()
+  resetQueueAndPlay: ({ tracks, index = 0 }) => {
+    const state = get()
     // 点击专辑或歌曲播放后，仍有可能 index、id不变
-    // const oldIndex = state.index
-    // const oldId = state.queue[oldIndex]?.id
-    // const newId = queue[index]?.id
-    // if (oldId === newId && oldIndex === index) {
-    //   set(state => ({ sameIndexAndIdButReStart: state.sameIndexAndIdButReStart + 1 }))
-    //   return
-    // }
-    set(() => ({ queue, index, isPlay: true }))
+    const oldIndex = state.index
+    const oldId = state.queue[oldIndex]?.id
+    const newId = tracks[index]?.id
+    if (oldId === newId && oldIndex === index) {
+      set(state => ({ sameIndexAndIdButReStart: state.sameIndexAndIdButReStart + 1 }))
+      return
+    }
+    set(() => ({ queue: tracks, index, isPlay: true }))
   },
   setIndex: index => set(() => ({ index })),
   setQueue: queue => set(() => ({ queue })),

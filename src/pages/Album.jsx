@@ -1,105 +1,86 @@
 import { useParams } from 'react-router-dom'
-import { album } from '../api.js'
-import { useQuery } from '../hooks.js'
+import api from '../api.js'
 import useStore from '../store.js'
-import ActionsMenu from '../components/ActionsMenu.jsx'
+import { useEffect, useState } from 'react'
+import Menu from '../components/Menu.jsx'
+import TracksGrouped from '../components/TracksGrouped.jsx'
 
 const Album = () => {
-  const { id: rawId } = useParams()
-  const id = Number(rawId)
-  const { result } = useQuery(album, { id })
-  const { tracks = [], title = '' } = result || {}
-  const play = useStore(state => state.play)
+  const { id } = useParams()
+  // const id = Number(rawId)
 
-  // const [libraryTrackIds, setLibraryTrackIds] = useState(new Set())
-  // const handleAddTracksToLibrary = async trackIds => {
-  //   await libraryTracksAdd({ trackIds, albumId: id })
-  //   setLibraryTrackIds(new Set([...libraryTrackIds, ...trackIds]))
-  // }
-  // const handleRemoveTrackFromLibrary = async trackIds => {
-  //   await libraryTracksRemove({ trackIds, albumId: id })
-  //   setLibraryTrackIds(state => {
-  //     const _libraryTrackIds = new Set(libraryTrackIds)
-  //     trackIds.forEach(id => _libraryTrackIds.delete(id))
-  //     return _libraryTrackIds
-  //   })
-  // }
-  // useEffect(() => {
-  //   const fetchLibAlTkIds = async () => {
-  //     setLibraryTrackIds(new Set(await libraryAlbumTrackIds({ id })))
-  //   }
-  //   fetchLibAlTkIds()
-  // }, [])
+  const [album, setAlbum] = useState({})
 
-  const handlePlayClick = index => {
-    play(tracks, index)
+  const fetchAlbum = async () => {
+    const result = await api.album({ id })
+    setAlbum(result)
   }
 
-  const tracksGrouped = []
-  const group = []
-  for (let i = 0; i <= tracks.length; i++) {
-    const { recording_id } = tracks[i] || {}
-    if (i >= 1 && recording_id !== tracks[i - 1]?.recording_id) {
-      const { recording_id, composer_id, composer_name, work_id, work_title, performers } =
-        tracks[i - 1]
-      tracksGrouped.push({
-        recording: {
-          id: recording_id,
-          composer_id,
-          composer_name,
-          work_id,
-          work_title,
-          performers,
-        },
-        tracks: [...group],
+  useEffect(() => {
+    fetchAlbum()
+  }, [])
+
+  const resetQueueAndPlay = useStore(state => state.resetQueueAndPlay)
+  const handlePlayClick = ({ index }) => {
+    resetQueueAndPlay({ tracks: album.tracks, index })
+  }
+  const handleAddToLibrary = async () => {
+    await api.addAlbumToLibrary({ id: album.id })
+    setAlbum({
+      ...album,
+      isInLibrary: true,
+    })
+  }
+  const handleMenuSuccess = ({ action, target }) => {
+    if (action === 'library') {
+      setAlbum({
+        ...album,
+        isInLibrary: !album.isInLibrary,
       })
-      group.length = 0
+      //   setAlbum(pre =>
+      //     pre.map(item => {
+      //       if (item.type === target.type && target.id === item.id) {
+      //         return {
+      //           ...item,
+      //           isInLibrary: !item.isInLibrary,
+      //         }
+      //       }
+      //       return item
+      //     })
+      //   )
+    } else if (action === 'favourite') {
+      //   setAlbum(pre =>
+      //     pre.map(item => {
+      //       if (item.type === target.type && target.id === item.id) {
+      //         return {
+      //           ...item,
+      //           isFavourite: !item.isFavourite,
+      //         }
+      //       }
+      //       return item
+      //     })
+      //   )
     }
-    group.push(tracks[i])
   }
+
+  const { tracks = [], title = '', isInLibrary } = album
   return (
     <div>
       {/* 专辑信息 */}
       <div className="flex">
-        {/* <Image src={result?.cover_url} className="w-30 h-30"></Image> */}
         <div>
           <div>{title}</div>
-          <button onClick={() => handlePlayClick(0)}>▶</button>
-          <ActionsMenu type="album" albumId={id} trackIds={tracks.map(t => t.id)} />
+          <button onClick={() => handlePlayClick({ index: 0 })}>▶ </button>
+          {!isInLibrary && <button onClick={handleAddToLibrary}>Add </button>}
+          <Menu targetType="album" target={album} onSuccess={handleMenuSuccess} />
         </div>
       </div>
-      {/* 专辑音轨 */}
-      <div>
-        {tracksGrouped.map(({ recording, tracks }) => {
-          return (
-            // 录音组
-            <div key={tracks[0].id}>
-              {/* 录音标题 */}
-              <div>
-                <p>
-                  {recording.composer_name} {recording.work_title}
-                </p>
-                {/* <p>
-                  {Object.entries(recording.performers)
-                    .filter(([_, pfs]) => pfs.length >= 1)
-                    .map(([role, pfs]) => pfs.map(pf => pf.name).join(' / '))
-                    .join(' / ')}
-                </p> */}
-              </div>
-              {/* 录音乐章 */}
-              <div>
-                {tracks.map(track => (
-                  <div key={track.id}>
-                    <span onClick={() => handlePlayClick(track.track_number - 1)}>▶</span>
-                    <span>{track.title}</span>
-                    <ActionsMenu type="track" albumId={id} trackIds={[track.id]} />
-                  </div>
-                ))}
-              </div>
-            </div>
-          )
-        })}
-      </div>
+      {/* 专辑曲目 */}
+      <TracksGrouped
+        tracks={tracks}
+        onTrackPlay={handlePlayClick}
+        onMenuSuccess={handleMenuSuccess}
+      />
     </div>
   )
 }

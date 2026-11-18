@@ -4,7 +4,7 @@ import Menubar from './components/Menubar'
 import SideBar from './components/Sidebar'
 import Header from './components/Header'
 import Home from './pages/Home'
-// import Album from './pages/Album'
+import Album from './pages/Album'
 // import LibraryTracks from './pages/LibraryTracks'
 // import LibraryAlbums from './pages/LibraryAlbums'
 // import PlaylistsCreated from './pages/PlaylistsCreated'
@@ -18,10 +18,10 @@ const router = createBrowserRouter([
         index: true,
         element: <Home />,
       },
-      // {
-      //   path: 'album/:id',
-      //   element: <Album />,
-      // },
+      {
+        path: 'album/:id',
+        element: <Album />,
+      },
       // {
       //   path: '/library/albums',
       //   element: <LibraryAlbums />,

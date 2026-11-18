@@ -16,7 +16,7 @@ const Menu = ({ hasPlay, navigate, targetType, target, onSuccess }) => {
   const setCreatedPlaylist = useStore(state => state.setCreatedPlaylist)
   const hasSetCreatedPlaylist = useStore(state => state.hasSetCreatedPlaylist)
   const createPlaylist = useStore(state => state.createPlaylist)
-  const playAlbumOrPlaylist = useStore(state => state.playAlbumOrPlaylist)
+  const resetQueueAndPlay = useStore(state => state.resetQueueAndPlay)
   const fetchAlbum = api.album
   const fetchPlaylist = api.playlist
   const addAlbumToLibrary = api.addAlbumToLibrary
@@ -44,6 +44,12 @@ const Menu = ({ hasPlay, navigate, targetType, target, onSuccess }) => {
       favourite = favouritePlaylist
       unfavourite = unfavouritePlaylist
       break
+    case 'track':
+      addToLibrary = addAlbumToLibrary
+      addToPlaylist = addPlaylistToPlaylist
+      favourite = favouritePlaylist
+      unfavourite = unfavouritePlaylist
+      break
     default:
       break
   }
@@ -55,7 +61,7 @@ const Menu = ({ hasPlay, navigate, targetType, target, onSuccess }) => {
   }, [])
 
   const handlePlay = async () => {
-    playAlbumOrPlaylist({ queue: (await fetchPlayTracks({ id: target.id })).tracks })
+    resetQueueAndPlay({ queue: (await fetchPlayTracks({ id: target.id })).tracks })
   }
   const handleAddToLibrary = async () => {
     await addToLibrary({ id: target.id })
@@ -82,7 +88,7 @@ const Menu = ({ hasPlay, navigate, targetType, target, onSuccess }) => {
 
   return (
     <div className="inline-block">
-      <button onClick={handleTriggerClick}>Menu</button>
+      <button onClick={handleTriggerClick}>menu</button>
       {isOpen && (
         <div className="fixed bg-white border-2" style={{ left: xy.x + 5, top: xy.y + 5 }}>
           {hasPlay && <div onClick={handlePlay}>Play</div>}
