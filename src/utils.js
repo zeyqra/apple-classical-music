@@ -59,8 +59,15 @@ export const tracksGroupByRecording = tracks => {
   for (let i = 0; i < tracks.length; i++) {
     tracksGroup.push(tracks[i])
     if (tracks[i].recording_id !== tracks[i + 1]?.recording_id || i === tracks.length) {
-      const { recording_id, composer_id, composer_name, work_id, work_title, performers } =
-        tracks[i]
+      const {
+        recording_id,
+        composer_id,
+        composer_name,
+        work_id,
+        work_title,
+        performers,
+        isRecordingFavourite,
+      } = tracks[i]
       recordingsGroup.push({
         recording: {
           id: recording_id,
@@ -69,6 +76,7 @@ export const tracksGroupByRecording = tracks => {
           work_id,
           work_title,
           performers,
+          isFavourite: isRecordingFavourite,
         },
         tracks: [...tracksGroup],
       })
