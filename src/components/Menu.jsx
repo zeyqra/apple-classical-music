@@ -2,10 +2,20 @@ import { useEffect, useState } from 'react'
 import useStore from '../store'
 import api from '../api'
 
-const Menu = ({ hasPlay, navigate, targetType, target, onSuccess }) => {
+const Menu = ({
+  actions,
+  isInLibrary,
+  isFavourite,
+  onMenuClick,
+  hasPlay,
+  navigate,
+  targetType,
+  target,
+  onSuccess,
+}) => {
   const [isOpen, setIsOpen] = useState(false)
   const [xy, setXy] = useState({ x: 0, y: 0 })
-  const [newPlaylistTitle, setNewPlaylistTitle] = useState('New Playlist ' + new Date().getTime())
+  const [newPlaylistTitle, setNewPlaylistTitle] = useState('Playlist ' + new Date().getTime())
 
   const handleTriggerClick = e => {
     setXy({ x: e.clientX, y: e.clientY })
@@ -91,7 +101,41 @@ const Menu = ({ hasPlay, navigate, targetType, target, onSuccess }) => {
       <button onClick={handleTriggerClick}>menu</button>
       {isOpen && (
         <div className="fixed bg-white border-2" style={{ left: xy.x + 5, top: xy.y + 5 }}>
-          {hasPlay && <div onClick={handlePlay}>Play</div>}
+          {actions.map(action => {
+            if (action === 'PLAY')
+              return <div onClick={() => onMenuClick({ action: 'PLAY' })}>Play</div>
+            if (action === 'LIBRARY' && !isInLibrary)
+              return (
+                <div onClick={() => onMenuClick({ action: 'ADD_TO_LIBRARY' })}>Add to Library</div>
+              )
+            if (action === 'LIBRARY' && isInLibrary)
+              return (
+                <div onClick={() => onMenuClick({ action: 'REMOVE_FROM_LIBRARY' })}>
+                  Remove from Library
+                </div>
+              )
+            if (action === 'PLAYLIST')
+              return (
+                <div>
+                  <div>Add to Playlist:</div>
+                  <div onClick={handleCreatePlaylist}>New Playlist</div>
+                  {createdPlaylists.map(p => (
+                    <div
+                      onClick={() => onMenuClick({ action: 'ADD_TO_PLAYLIST', playlistId: p.id })}
+                      key={p.id}>
+                      {p.title}
+                    </div>
+                  ))}
+                </div>
+              )
+            if (action === 'TO_RECORDING')
+              return <div onClick={() => onMenuClick({ action: 'TO_RECORDING' })}>To Recording</div>
+            if (action === 'FAVOURITE' && !isFavourite)
+              return <div onClick={() => onMenuClick({ action: 'FAVOURITE' })}>Favourite</div>
+            if (action === 'FAVOURITE' && isFavourite)
+              return <div onClick={() => onMenuClick({ action: 'UNFAVOURITE' })}>Unfavourite</div>
+          })}
+          {/* {hasPlay && <div onClick={handlePlay}>Play</div>}
           {targetType === 'album' && !target.isInLibrary && (
             <div onClick={handleAddToLibrary}>Add to Library</div>
           )}
@@ -109,7 +153,7 @@ const Menu = ({ hasPlay, navigate, targetType, target, onSuccess }) => {
             ))}
           </div>
           {!target.isFavourite && <div onClick={handleFavourite}>Favourite</div>}
-          {!!target.isFavourite && <div onClick={handleUnfavourite}>Unfavourite</div>}
+          {!!target.isFavourite && <div onClick={handleUnfavourite}>Unfavourite</div>} */}
         </div>
       )}
     </div>
