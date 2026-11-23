@@ -63,12 +63,6 @@ const Menu = ({
     default:
       break
   }
-  useEffect(() => {
-    if (!hasSetCreatedPlaylist) {
-      useStore.setState({ hasSetCreatedPlaylist: true })
-      setCreatedPlaylist()
-    }
-  }, [])
 
   const handlePlay = async () => {
     resetQueueAndPlay({ queue: (await fetchPlayTracks({ id: target.id })).tracks })

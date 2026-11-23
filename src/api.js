@@ -38,6 +38,8 @@ export default {
   album: params => get(`/album/${params.id}`),
   // 歌单详情
   playlist: params => get(`/playlist/${params.id}`),
+  // 所有状态数据
+  relations: () => get(`/relations`),
   // 专辑加入资料库
   addAlbumToLibrary: data => put('/library/album', data),
   removeAlbumFromLibrary: data => del('/library/album', data),

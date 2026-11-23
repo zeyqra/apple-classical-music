@@ -5,6 +5,7 @@ import SideBar from './components/Sidebar'
 import Header from './components/Header'
 import Home from './pages/Home'
 import Album from './pages/Album'
+import Playlist from './pages/Playlist'
 // import LibraryTracks from './pages/LibraryTracks'
 // import LibraryAlbums from './pages/LibraryAlbums'
 // import PlaylistsCreated from './pages/PlaylistsCreated'
@@ -21,6 +22,10 @@ const router = createBrowserRouter([
       {
         path: 'album/:id',
         element: <Album />,
+      },
+      {
+        path: 'playlist/:id',
+        element: <Playlist />,
       },
       // {
       //   path: '/library/albums',

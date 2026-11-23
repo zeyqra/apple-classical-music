@@ -10,7 +10,7 @@ const Album = () => {
 
   const [album, setAlbum] = useState({})
   const resetQueueAndPlay = useStore(state => state.resetQueueAndPlay)
-  const { tracks = [], title = '', isInLibrary, isFavourite } = album
+  const { tracks = [], title = '', performers = [], isInLibrary, isFavourite } = album
   const navigate = useNavigate()
 
   const fetchAlbum = async () => {
@@ -194,10 +194,11 @@ const Album = () => {
       <div className="flex">
         <div>
           <div>{title}</div>
+          <div>{performers.map(p => p.name).join(' / ')}</div>
           <button onClick={() => handlePlayClick({ index: 0 })}>▶ </button>
-          {!isInLibrary && <button onClick={addAlbumToLibrary}>Add </button>}
+          {!isInLibrary && <button onClick={() => addAlbumToLibrary({ id })}>Add </button>}
           <Menu
-            actions={['PLAY', 'LIBRARY', 'PLAYLIST', 'FAVOURITE']}
+            actions={['LIBRARY', 'PLAYLIST', 'FAVOURITE']}
             isInLibrary={isInLibrary}
             isFavourite={isFavourite}
             onMenuClick={({ action, playlistId }) =>

@@ -48,90 +48,117 @@ const useStore = create((set, get) => ({
   showFullPlayer: false,
   setShowFullPlayer: showFullPlayer => set({ showFullPlayer }),
 
-  // 资料库
-  // libraryTrackIds: new Map(),
-  // setLibraryTracks: async () => {
-  //   const tracks = await libraryTracks()
-  //   const libraryTrackIds = new Map()
-  //   tracks.forEach(tk => {
-  //     if (!libraryTrackIds.has(tk.album_id)) {
-  //       libraryTrackIds.set(tk.album_id, new Set())
-  //     }
-  //     libraryTrackIds.get(tk.album_id).add(tk.id)
-  //   })
-  //   set({ libraryTrackIds })
-  // },
-  // addTracksToLibrary: async data => {
-  //   const { trackIds, albumId } = await libraryTracksAdd(data)
+  // 资料库/收藏
+  libraryTrackIds: new Map(),
+  favouriteTrackIds: new Set(),
+  favouriteAlbumIds: new Set(),
+  favouritePlaylistIds: new Set(),
+  favouriteRecordingIds: new Set(),
 
-  //   set(state => {
-  //     const libraryTrackIds = new Map(state.libraryTrackIds)
-  //     const libTkIdsAl = new Set(state.libraryTrackIds.get(albumId) || [])
+  setRelations: async () => {
+    const {
+      libraryTrackIds,
+      favouriteTrackIds,
+      favouriteAlbumIds,
+      favouritePlaylistIds,
+      favouriteRecordingIds,
+    } = await api.relations()
 
-  //     trackIds.forEach(tkId => libTkIdsAl.add(tkId))
-  //     libraryTrackIds.set(albumId, libTkIdsAl)
+    // [{id:1,trackIds:[1,2,3]}]
+    const _libraryTrackIds = new Map()
+    libraryTrackIds.forEach(({ id, trackIds }) => {
+      _libraryTrackIds.set(id, new Set(trackIds))
+    })
 
-  //     console.log('console: libraryTrackIds', libraryTrackIds)
-  //     return { libraryTrackIds }
-  //   })
-  // },
-  // removeTracksFromLibrary: async data => {
-  //   const { trackIds, albumId } = await libraryTracksRemove(data)
-  //   set(state => {
-  //     const libraryTrackIds = new Map(state.libraryTrackIds)
-  //     const libTkIdsAl = new Set(state.libraryTrackIds.get(albumId))
+    set({
+      libraryTrackIds: _libraryTrackIds,
+      favouriteTrackIds: new Set(favouriteTrackIds),
+      favouriteAlbumIds: new Set(favouriteAlbumIds),
+      favouritePlaylistIds: new Set(favouritePlaylistIds),
+      favouriteRecordingIds: new Set(favouriteRecordingIds),
+    })
+  },
 
-  //     trackIds.forEach(tkId => libTkIdsAl.delete(tkId))
+  addTrackToLibrary: async data => {
+    const libraryTrackIds = await api.addTrackToLibrary(data)
 
-  //     if (libTkIdsAl.size === 0) {
-  //       libraryTrackIds.delete(albumId)
-  //     } else {
-  //       libraryTrackIds.set(albumId, libTkIdsAl)
-  //     }
+    const _libraryTrackIds = new Map()
+    libraryTrackIds.forEach(({ id, trackIds }) => {
+      _libraryTrackIds.set(id, new Set(trackIds))
+    })
 
-  //     return { libraryTrackIds }
-  //   })
-  // },
+    set({ libraryTrackIds: _libraryTrackIds })
+  },
 
-  // 收藏
-  // playlistCollectedIds: [],
-  // setPlaylistCollectedIds: async () => {
-  //   const playlistCollected = await playlistCollected()
-  //   set({ playlistCollectedIds: playlistCollected.map(p => p.id) })
-  // },
-  // collectPlaylist: async data => {
-  //   const { id, type } = await collectPlaylist(data)
-  //   if (type)
-  //     set(state => ({ playlistCollectedIds: state.playlistCollectedIds.filter(pid => pid === id) }))
-  //   else set(state => ({ playlistCollectedIds: [...state.playlistCollectedIds, id] }))
-  // },
-  // 创建的播放列表
-  // playlistCreated: [],
-  // setPlaylistCreated: async () => {
-  //   const playlistCreated = await playlistCreatedApi()
-  //   set({ playlistCreated })
-  // },
-  // // createPlaylist: async data => {
-  // //   const newPlaylist = await createPlaylistApi(data)
-  // //   set(state => ({ playlistCreated: [...state.playlistCreated, newPlaylist] }))
-  // //   return newPlaylist
-  // // },
-  // removePlaylist: async data => {
-  //   const { id } = await removePlaylistApi(data)
-  //   set(state => ({ playlistCreated: state.playlistCreated.filter(p => p.id !== id) }))
-  // },
+  removeTrackFromLibrary: async data => {
+    const libraryTrackIds = await api.removeTrackFromLibrary(data)
+
+    const _libraryTrackIds = new Map()
+    libraryTrackIds.forEach(({ id, trackIds }) => {
+      _libraryTrackIds.set(id, new Set(trackIds))
+    })
+
+    set({ libraryTrackIds: _libraryTrackIds })
+  },
+
+  favouriteAlbum: async data => {
+    const favouriteAlbumIds = await api.favouriteAlbum(data)
+
+    set({ favouriteAlbumIds: new Set(favouriteAlbumIds) })
+  },
+
+  unfavouriteAlbum: async data => {
+    const favouriteAlbumIds = await api.unfavouriteAlbum(data)
+
+    set({ favouriteAlbumIds: new Set(favouriteAlbumIds) })
+  },
+
+  favouritePlaylist: async data => {
+    const favouritePlaylistIds = await api.favouritePlaylist(data)
+
+    set({ favouritePlaylistIds: new Set(favouritePlaylistIds) })
+  },
+
+  unfavouritePlaylist: async data => {
+    const favouritePlaylistIds = await api.unfavouritePlaylist(data)
+
+    set({ favouritePlaylistIds: new Set(favouritePlaylistIds) })
+  },
+
+  favouriteTrack: async data => {
+    const favouriteTrackIds = await api.favouriteTrack(data)
+
+    set({ favouriteTrackIds: new Set(favouriteTrackIds) })
+  },
+
+  unfavouriteTrack: async data => {
+    const favouriteTrackIds = await api.unfavouriteTrack(data)
+
+    set({ favouriteTrackIds: new Set(favouriteTrackIds) })
+  },
+
+  favouriteRecording: async data => {
+    const favouriteRecordingIds = await api.favouriteRecording(data)
+
+    set({ favouriteRecordingIds: new Set(favouriteRecordingIds) })
+  },
+
+  unfavouriteRecording: async data => {
+    const favouriteRecordingIds = await api.unfavouriteRecording(data)
+
+    set({ favouriteRecordingIds: new Set(favouriteRecordingIds) })
+  },
 
   createdPlaylists: [],
-  hasSetCreatedPlaylist: false,
+
   setCreatedPlaylist: async () => {
     const createdPlaylists = await api.createdPlaylists()
     set({ createdPlaylists })
   },
+
   createPlaylist: async data => {
-    const result = await api.createPlaylist(data)
-    set(state => ({
-      createdPlaylists: [result, ...state.createdPlaylists],
-    }))
+    const createdPlaylists = await api.createPlaylist(data)
+    set({ createdPlaylists })
   },
 }))
 
