@@ -49,7 +49,8 @@ const useStore = create((set, get) => ({
   setShowFullPlayer: showFullPlayer => set({ showFullPlayer }),
 
   // 资料库/收藏
-  libraryTrackIds: new Map(),
+  libraryTrackIds: new Set(),
+  libraryAlbumIds: new Set(),
   favouriteTrackIds: new Set(),
   favouriteAlbumIds: new Set(),
   favouritePlaylistIds: new Set(),
@@ -79,26 +80,40 @@ const useStore = create((set, get) => ({
     })
   },
 
+  addAlbumToLibrary: async data => {
+    const libraryTrackIds = await api.addAlbumToLibrary(data)
+
+    set({
+      libraryTrackIds: new Set(libraryTrackIds.map(lti => lti.id)),
+      libraryAlbumIds: new Set(libraryTrackIds.map(lti => lti.album_id)),
+    })
+  },
+
+  removeAlbumFromLibrary: async data => {
+    const libraryTrackIds = await api.removeAlbumFromLibrary(data)
+
+    set({
+      libraryTrackIds: new Set(libraryTrackIds.map(lti => lti.id)),
+      libraryAlbumIds: new Set(libraryTrackIds.map(lti => lti.album_id)),
+    })
+  },
+
   addTrackToLibrary: async data => {
     const libraryTrackIds = await api.addTrackToLibrary(data)
 
-    const _libraryTrackIds = new Map()
-    libraryTrackIds.forEach(({ id, trackIds }) => {
-      _libraryTrackIds.set(id, new Set(trackIds))
+    set({
+      libraryTrackIds: new Set(libraryTrackIds.map(lti => lti.id)),
+      libraryAlbumIds: new Set(libraryTrackIds.map(lti => lti.album_id)),
     })
-
-    set({ libraryTrackIds: _libraryTrackIds })
   },
 
   removeTrackFromLibrary: async data => {
     const libraryTrackIds = await api.removeTrackFromLibrary(data)
 
-    const _libraryTrackIds = new Map()
-    libraryTrackIds.forEach(({ id, trackIds }) => {
-      _libraryTrackIds.set(id, new Set(trackIds))
+    set({
+      libraryTrackIds: new Set(libraryTrackIds.map(lti => lti.id)),
+      libraryAlbumIds: new Set(libraryTrackIds.map(lti => lti.album_id)),
     })
-
-    set({ libraryTrackIds: _libraryTrackIds })
   },
 
   favouriteAlbum: async data => {

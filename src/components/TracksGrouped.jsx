@@ -1,21 +1,16 @@
+import { useMenuActions, useStatus } from '../hooks'
 import { tracksGroupByRecording } from '../utils'
 import Menu from './Menu'
 
-const TracksGrouped = ({ tracks: orgTracks, onTrackPlay, onTracksGroupedMenuClick }) => {
+const TracksGrouped = ({ tracks: orgTracks, toAlbum, onTrackPlay }) => {
   const tracksGrouped = tracksGroupByRecording(orgTracks)
+  const { handleAddToLibrary } = useMenuActions()
+  const { isInLibrary } = useStatus()
   return (
     <div>
       {tracksGrouped.map(
         ({
-          recording: {
-            id,
-            composer_id,
-            composer_name,
-            work_id,
-            work_title,
-            performers,
-            isFavourite,
-          },
+          recording: { id, composer_id, composer_name, work_id, work_title, performers },
           tracks,
         }) => {
           return (
@@ -29,13 +24,7 @@ const TracksGrouped = ({ tracks: orgTracks, onTrackPlay, onTracksGroupedMenuClic
                   </div>
                   <div>{performers.map(p => p.name).join(' / ')}</div>
                 </div>
-                <Menu
-                  actions={['FAVOURITE']}
-                  isFavourite={isFavourite}
-                  onMenuClick={({ action }) =>
-                    onTracksGroupedMenuClick({ id, type: 'recording', action })
-                  }
-                />
+                <Menu actions={['FAVOURITE']} targetId={id} targetType={'recording'} />
               </div>
 
               {/* 曲目组 */}
@@ -49,25 +38,22 @@ const TracksGrouped = ({ tracks: orgTracks, onTrackPlay, onTracksGroupedMenuClic
                       ▶
                     </span>
                     <span>{t.title} </span>
-                    {!t.isInLibrary && (
+                    {!isInLibrary({ targetId: t.id, targetType: 'track' }) && (
                       <button
-                        onClick={() =>
-                          onTracksGroupedMenuClick({
-                            id: t.id,
-                            type: 'track',
-                            action: 'ADD_TO_LIBRARY',
-                          })
-                        }>
+                        onClick={() => handleAddToLibrary({ targetId: t.id, targetType: 'track' })}>
                         +
                       </button>
                     )}
                     <Menu
-                      actions={['LIBRARY', 'PLAYLIST', 'TO_RECORDING', 'FAVOURITE']}
-                      isInLibrary={t.isInLibrary}
-                      isFavourite={t.isFavourite}
-                      onMenuClick={({ action, playlistId }) =>
-                        onTracksGroupedMenuClick({ id: t.id, type: 'track', action, playlistId })
-                      }
+                      actions={[
+                        'LIBRARY',
+                        'PLAYLIST',
+                        ...(toAlbum ? ['TO_ALBUM'] : []),
+                        'TO_RECORDING',
+                        'FAVOURITE',
+                      ]}
+                      targetId={t.id}
+                      targetType={'track'}
                     />
                   </div>
                 ))}
