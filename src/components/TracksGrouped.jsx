@@ -1,10 +1,10 @@
-import { useMenuActions, useStatus } from '../hooks'
+import { useActions, useStatus } from '../hooks'
 import { tracksGroupByRecording } from '../utils'
 import Menu from './Menu'
 
-const TracksGrouped = ({ tracks: orgTracks, toAlbum, onTrackPlay }) => {
+const TracksGrouped = ({ tracks: orgTracks, hasToAlbum = true, onTrackPlay }) => {
   const tracksGrouped = tracksGroupByRecording(orgTracks)
-  const { handleAddToLibrary } = useMenuActions()
+  const { handleAddToLibrary } = useActions()
   const { isInLibrary } = useStatus()
   return (
     <div>
@@ -24,7 +24,18 @@ const TracksGrouped = ({ tracks: orgTracks, toAlbum, onTrackPlay }) => {
                   </div>
                   <div>{performers.map(p => p.name).join(' / ')}</div>
                 </div>
-                <Menu actions={['FAVOURITE']} targetId={id} targetType={'recording'} />
+                <Menu
+                  actions={['FAVOURITE']}
+                  target={{
+                    id,
+                    composer_id,
+                    composer_name,
+                    work_id,
+                    work_title,
+                    performers,
+                    type: 'recording',
+                  }}
+                />
               </div>
 
               {/* 曲目组 */}
@@ -48,12 +59,11 @@ const TracksGrouped = ({ tracks: orgTracks, toAlbum, onTrackPlay }) => {
                       actions={[
                         'LIBRARY',
                         'PLAYLIST',
-                        ...(toAlbum ? ['TO_ALBUM'] : []),
+                        ...(hasToAlbum ? ['TO_ALBUM'] : []),
                         'TO_RECORDING',
                         'FAVOURITE',
                       ]}
-                      targetId={t.id}
-                      targetType={'track'}
+                      target={{ ...t, type: 'track' }}
                     />
                   </div>
                 ))}

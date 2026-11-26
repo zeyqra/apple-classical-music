@@ -1,6 +1,5 @@
 import { createContext, useCallback, useContext, useEffect, useRef } from 'react'
 import useStore from './store'
-import { usePlayNextPrev } from './hooks'
 
 const PlayerContext = createContext()
 
@@ -12,8 +11,7 @@ export const PlayerProvider = ({ children }) => {
   const track = queue[index] || null
   const id = track?.id || null
   const url = track?.audio_url || null
-  // const { data: urlData = {} } = useSongUrlV1({ id, level: 'lossless' })
-  // const url = urlData.data?.[0]?.url // undefined
+
   const isPlay = useStore(state => state.isPlay)
   const setIsPlay = useStore(state => state.setIsPlay)
   const dt = useStore(state => state.dt)
@@ -28,9 +26,9 @@ export const PlayerProvider = ({ children }) => {
   const setIsSeeking = useStore(state => state.setIsSeeking)
   const seekCt = useStore(state => state.seekCt)
   const setSeekCt = useStore(state => state.setSeekCt)
+  const setQueuePlay = useStore(state => state.setQueuePlay)
+  const moveQueue = useStore(state => state.moveQueue)
   const sameIndexAndIdButReStart = useStore(state => state.sameIndexAndIdButReStart)
-
-  const playNextPrev = usePlayNextPrev()
 
   const play = useCallback(() => {
     audioRef.current?.play()
@@ -56,8 +54,8 @@ export const PlayerProvider = ({ children }) => {
     },
     handlePrevNextClick: delta => {
       const audio = audioRef.current
-      const result = playNextPrev(delta)
-      console.log('console: handlePrevNextClick result', result)
+      const result = moveQueue(delta)
+      console.log('console: moveQueue result', result)
       if (result === 'boundary') {
         audio.currentTime = 0
         audio.pause()
@@ -159,7 +157,7 @@ export const PlayerProvider = ({ children }) => {
     if (!url || !audioRef.current) return
     const handleEnded = () => {
       console.log('console: ended mode', mode)
-      const result = playNextPrev(1)
+      const result = moveQueue(1)
       console.log('console: ended result', mode, result)
       if (result === 'boundary') {
         audioRef.current.currentTime = 0
@@ -176,7 +174,7 @@ export const PlayerProvider = ({ children }) => {
     return () => {
       audioRef.current.removeEventListener('ended', handleEnded)
     }
-  }, [url, mode, playNextPrev])
+  }, [url, mode, moveQueue])
 
   useEffect(() => {
     if (!url || !audioRef.current) return
@@ -226,6 +224,7 @@ export const PlayerProvider = ({ children }) => {
   return (
     <PlayerContext.Provider
       value={{
+        setQueuePlay,
         track,
         play,
         pause,

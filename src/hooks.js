@@ -2,47 +2,7 @@ import { useEffect, useState, useCallback } from 'react'
 import useStore from './store'
 import api from './api'
 import { useNavigate } from 'react-router-dom'
-
-export function usePlayNextPrev() {
-  const queue = useStore(state => state.queue)
-  const index = useStore(state => state.index)
-  const mode = useStore(state => state.mode)
-  const setIndex = useStore(state => state.setIndex)
-
-  return useCallback(
-    delta => {
-      if (!queue.length) return
-
-      const total = queue.length
-      const newIndex = index + delta
-
-      console.log('console:usePlayNextPrev mode', mode)
-      // 单曲循环：index 不变
-      if (mode === 'singleLoop') {
-        console.log('console: usePlayNextPrev return restart')
-        return 'restart'
-      }
-
-      // 顺序播放
-      if (mode === 'list') {
-        if (newIndex < 0 || newIndex >= total) {
-          return 'boundary' // 播放器 effect 会处理 audio.pause()
-        }
-        setIndex(newIndex)
-        return
-      }
-
-      // 列表循环
-      if (mode === 'listLoop') {
-        if (total === 1) return 'restart'
-
-        const nextIndex = (newIndex + total) % total
-        setIndex(nextIndex)
-      }
-    },
-    [queue, index, mode, setIndex]
-  )
-}
+import { usePlayer } from './PlayerContext'
 
 export const useQuery = (queryFn, params) => {
   const [result, setResult] = useState(null)
@@ -77,11 +37,11 @@ export const useQuery = (queryFn, params) => {
   return { result, isLoading, error, refetch }
 }
 
-export const useStatus = (defaultTarget = {}) => {
-  const resolveTarget = (target = {}) => ({
-    targetId: target.targetId ?? defaultTarget.targetId,
-    targetType: target.targetId ?? defaultTarget.targetType,
-  })
+export const useStatus = () => {
+  // const resolveTarget = (target = {}) => ({
+  //   targetId: target.targetId ?? defaultTarget.targetId,
+  //   targetType: target.targetType ?? defaultTarget.targetType,
+  // })
   const libraryTrackIds = useStore(state => state.libraryTrackIds)
   const libraryAlbumIds = useStore(state => state.libraryAlbumIds)
   const favouriteTrackIds = useStore(state => state.favouriteTrackIds)
@@ -89,30 +49,35 @@ export const useStatus = (defaultTarget = {}) => {
   const favouritePlaylistIds = useStore(state => state.favouritePlaylistIds)
   const favouriteRecordingIds = useStore(state => state.favouriteRecordingIds)
 
-  const isInLibrary = target => {
-    const { targetId, targetType } = resolveTarget(target)
-    if (targetType === 'album') return libraryAlbumIds.has(targetId)
-    if (targetType === 'track') return libraryTrackIds.has(targetId)
+  const isInLibrary = ({ id, type }) => {
+    // const { targetId, targetType } = resolveTarget(target)
+    if (type === 'album') return libraryAlbumIds.has(id)
+    if (type === 'track') return libraryTrackIds.has(id)
   }
 
-  const isFavourite = target => {
-    const { targetId, targetType } = resolveTarget(target)
-    if (targetType === 'album') return favouriteAlbumIds.has(targetId)
-    if (targetType === 'playlist') return favouritePlaylistIds.has(targetId)
-    if (targetType === 'track') return favouriteTrackIds.has(targetId)
-    if (targetType === 'recording') return favouriteRecordingIds.has(targetId)
+  const isFavourite = ({ id, type }) => {
+    // const { id, type } = resolveTarget(target)
+    if (type === 'album') return favouriteAlbumIds.has(id)
+    if (type === 'playlist') return favouritePlaylistIds.has(id)
+    if (type === 'track') return favouriteTrackIds.has(id)
+    if (type === 'recording') return favouriteRecordingIds.has(id)
   }
 
   return { isInLibrary, isFavourite }
 }
 
-export const useMenuActions = (defaultTarget = {}) => {
+export const useActions = () => {
   const navigate = useNavigate()
 
-  const resolveTarget = (target = {}) => ({
-    targetId: target.targetId ?? defaultTarget.targetId,
-    targetType: target.targetId ?? defaultTarget.targetType,
-  })
+  // const resolveTarget = (target = {}) => {
+  //   console.log({
+  //     ...defaultTarget,
+  //     ...target,
+  //   })
+  //   return {
+  //     ...defaultTarget,
+  //   }
+  // }
 
   const addAlbumToLibrary = useStore(state => state.addAlbumToLibrary)
   const removeAlbumFromLibrary = useStore(state => state.removeAlbumFromLibrary)
@@ -127,7 +92,7 @@ export const useMenuActions = (defaultTarget = {}) => {
   const favouriteRecording = useStore(state => state.favouriteRecording)
   const unfavouriteRecording = useStore(state => state.unfavouriteRecording)
   const createPlaylist = useStore(state => state.createPlaylist)
-  const resetQueueAndPlay = useStore(state => state.resetQueueAndPlay)
+  const { setQueuePlay } = usePlayer()
 
   // let fetchPlayTracks, addToLibrary, removeFromLibrary, addToPlaylist, favourite, unfavourite
   // switch (targetType) {
@@ -159,92 +124,98 @@ export const useMenuActions = (defaultTarget = {}) => {
   //     break
   // }
 
-  const getActions = ({ targetType, action }) => {
-    let _action
-    if (action === 'PLAY') {
-      if (targetType === 'album') _action = api.album
-      if (targetType === 'playlist') _action = api.playlist
-    } else if (action === 'ADD_TO_LIBRARY') {
-      if (targetType === 'album') _action = addAlbumToLibrary
-      if (targetType === 'track') _action = addTrackToLibrary
-    } else if (action === 'REMOVE_FROM_LIBRARY') {
-      if (targetType === 'album') _action = removeAlbumFromLibrary
-      if (targetType === 'track') _action = removeTrackFromLibrary
-    } else if (action === 'ADD_TO_PLAYLIST') {
-      if (targetType === 'album') _action = api.addAlbumToPlaylist
-      if (targetType === 'playlist') _action = api.addPlaylistToPlaylist
-      if (targetType === 'track') _action = api.addTrackToPlaylist
-    } else if (action === 'FAVOURITE') {
-      if (targetType === 'album') _action = favouriteAlbum
-      if (targetType === 'playlist') _action = favouritePlaylist
-      if (targetType === 'track') _action = favouriteTrack
-      if (targetType === 'recording') _action = favouriteRecording
-    } else if (action === 'UNFAVOURITE') {
-      if (targetType === 'album') _action = unfavouriteAlbum
-      if (targetType === 'playlist') _action = unfavouritePlaylist
-      if (targetType === 'track') _action = unfavouriteTrack
-      if (targetType === 'recording') _action = unfavouriteRecording
-    }
-
-    return _action
-  }
-
-  const handlePlay = async target => {
-    const { targetId, targetType } = resolveTarget(target)
-    const fetchPlayTracks = getActions({ action: 'PLAY', targetType })
-    resetQueueAndPlay({
-      queue: (await fetchPlayTracks({ id: targetId })).tracks,
+  const handleFetchTracksPlay = async ({ id, type }) => {
+    // const { id, type } = resolveTarget(target)
+    let fetchPlayTracks
+    if (type === 'album') fetchPlayTracks = api.album
+    if (type === 'playlist') fetchPlayTracks = api.playlist
+    setQueuePlay({
+      queue: (await fetchPlayTracks({ id })).tracks,
     })
   }
 
-  const handleAddToLibrary = async target => {
-    const { targetId, targetType } = resolveTarget(target)
-    const addToLibrary = getActions({ action: 'ADD_TO_LIBRARY', targetType })
-    await addToLibrary({ id: targetId })
+  const handleAddToLibrary = async ({ id, type }) => {
+    // const { id, type } = resolveTarget(target)
+    let addToLibrary
+    if (type === 'album') addToLibrary = addAlbumToLibrary
+    if (type === 'track') addToLibrary = addTrackToLibrary
+    await addToLibrary({ id })
   }
-  const handleRemoveFromLibrary = async target => {
-    const { targetId, targetType } = resolveTarget(target)
-    const removeFromLibrary = getActions({ action: 'REMOVE_FROM_LIBRARY', targetType })
-    await removeFromLibrary({ id: targetId })
+  const handleRemoveFromLibrary = async ({ id, type }) => {
+    // const { id, type } = resolveTarget(target)
+    let removeFromLibrary
+    if (type === 'album') removeFromLibrary = removeAlbumFromLibrary
+    if (type === 'track') removeFromLibrary = removeTrackFromLibrary
+    await removeFromLibrary({ id })
   }
   const handleCreatePlaylist = async ({ newPlaylistTitle }) => {
     await createPlaylist({ title: newPlaylistTitle })
   }
-  const handleAddToPlaylist = async ({ playlistId, targetId, targetType }) => {
-    const { targetId: id, targetType: type } = resolveTarget({ targetId, targetType })
-    const addToPlaylist = getActions({ action: 'ADD_TO_PLAYLIST', targetType: type })
+  const handleAddToPlaylist = async ({ playlistId, id, type }) => {
+    // const { id: _id, type: _type } = resolveTarget({ id, type })
+    let addToPlaylist
+    if (type === 'album') addToPlaylist = api.addAlbumToPlaylist
+    if (type === 'playlist') addToPlaylist = api.addPlaylistToPlaylist
+    if (type === 'track') addToPlaylist = api.addTrackToPlaylist
     await addToPlaylist({ id, playlistId })
   }
 
-  const handleToAlbum = async target => {
-    const { targetId } = resolveTarget(target)
-    navigate(`/album/${targetId}`)
+  const handleNavigateTo = async ({ type, id }) => {
+    navigate(`/${type}/${id}`)
   }
 
-  const handleToRecording = async target => {
-    const { targetId } = resolveTarget(target)
-    navigate(`/recording/${targetId}`)
+  // const handleToAlbum = async ({ album_id, id, type }) => {
+  //   // const { id } = resolveTarget(target)
+  //   let albumId
+  //   if (type === 'track') albumId = album_id
+  //   if (type === 'album') albumId = id
+  //   navigate(`/album/${albumId}`)
+  // }
+
+  // const handleToPlaylist = async ({ id, type }) => {
+  //   // const { id } = resolveTarget(target)
+  //   // let playlistId
+  //   // if (type === 'playlist') playlistId = id
+  //   navigate(`/playlist/${id}`)
+  // }
+
+  // const handleToRecording = async ({ recording_id, id, type }) => {
+  //   // const { id, type, recording_id } = resolveTarget(target)
+  //   let recordingId
+  //   if (type === 'track') recordingId = recording_id
+  //   if (type === 'recording') recordingId = id
+  //   navigate(`/recording/${recordingId}`)
+  // }
+
+  const handleFavourite = async ({ id, type }) => {
+    // const { id, type } = resolveTarget(target)
+    let favourite
+    if (type === 'album') favourite = favouriteAlbum
+    if (type === 'playlist') favourite = favouritePlaylist
+    if (type === 'track') favourite = favouriteTrack
+    if (type === 'recording') favourite = favouriteRecording
+    await favourite({ id })
   }
 
-  const handleFavourite = async target => {
-    const { targetId, targetType } = resolveTarget(target)
-    const favourite = getActions({ action: 'FAVOURITE', targetType })
-    await favourite({ id: targetId })
-  }
-
-  const handleUnfavourite = async target => {
-    const { targetId, targetType } = resolveTarget(target)
-    const unfavourite = getActions({ action: 'UNFAVOURITE', targetType })
-    await unfavourite({ id: targetId })
+  const handleUnfavourite = async ({ id, type }) => {
+    // const { id, type } = resolveTarget(target)
+    let unfavourite
+    if (type === 'album') unfavourite = unfavouriteAlbum
+    if (type === 'playlist') unfavourite = unfavouritePlaylist
+    if (type === 'track') unfavourite = unfavouriteTrack
+    if (type === 'recording') unfavourite = unfavouriteRecording
+    await unfavourite({ id })
   }
   return {
-    handlePlay,
+    handleFetchTracksPlay,
     handleAddToLibrary,
     handleRemoveFromLibrary,
     handleCreatePlaylist,
     handleAddToPlaylist,
-    handleToAlbum,
-    handleToRecording,
+    handleNavigateTo,
+    // handleToAlbum,
+    // handleToPlaylist,
+    // handleToRecording,
     handleFavourite,
     handleUnfavourite,
   }

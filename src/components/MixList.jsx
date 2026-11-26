@@ -1,15 +1,11 @@
 import { useEffect, useState } from 'react'
 import api from '../api'
 import Menu from './Menu'
-import { useNavigate } from 'react-router-dom'
-import useStore from '../store'
-import { useMenuActions } from '../hooks'
+import { useActions } from '../hooks'
 
 const MixList = () => {
   const [mixList, setMixList] = useState([])
-  const resetQueueAndPlay = useStore(state => state.resetQueueAndPlay)
-  const navigate = useNavigate()
-  const { handlePlay } = useMenuActions()
+  const { handleFetchTracksPlay, handleNavigateTo } = useActions()
 
   const fetchMixList = async () => {
     setMixList(await api.mixlist())
@@ -124,26 +120,15 @@ const MixList = () => {
   //   if (action === 'UNFAVOURITE' && type === 'playlist') unfavouritePlaylist({ id })
   // }
 
-  const handleNavigateClick = ({ type, id }) => {
-    navigate(`/${type}/${id}`)
-  }
   return (
     <div>
-      {mixList.map(item => (
-        <div key={item.id + '-' + item.type}>
-          <span onClick={() => handleNavigateClick(item)}>{item.title} </span>
-          <button onClick={() => handlePlay({ targetId: item.id, targetType: item.type })}>
-            ▶{' '}
-          </button>
+      {mixList.map(({ id, type, title }) => (
+        <div key={id + '-' + type}>
+          <span onClick={() => handleNavigateTo({ type: type, id: id })}>{title} </span>
+          <button onClick={() => handleFetchTracksPlay({ id, type })}>▶ </button>
           <Menu
-            actions={[
-              'PLAY',
-              ...(item.type === 'album' ? ['LIBRARY'] : []),
-              'PLAYLIST',
-              'FAVOURITE',
-            ]}
-            targetId={item.id}
-            targetType={item.type}
+            actions={['PLAY', ...(type === 'album' ? ['LIBRARY'] : []), 'PLAYLIST', 'FAVOURITE']}
+            target={{ id, type }}
           />
         </div>
       ))}

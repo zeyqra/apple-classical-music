@@ -5,22 +5,53 @@ const useStore = create((set, get) => ({
   // 播放器
   id: null,
   queue: [],
-  playlist: [],
   isPlay: false,
   index: 0,
   mode: 'listLoop',
   sameIndexAndIdButReStart: 0,
-  resetQueueAndPlay: ({ tracks, index = 0 }) => {
+  setQueuePlay: ({ queue, index = 0 }) => {
     const state = get()
     // 点击专辑或歌曲播放后，仍有可能 index、id不变
     const oldIndex = state.index
     const oldId = state.queue[oldIndex]?.id
-    const newId = tracks[index]?.id
+    const newId = queue[index]?.id
     if (oldId === newId && oldIndex === index) {
       set(state => ({ sameIndexAndIdButReStart: state.sameIndexAndIdButReStart + 1 }))
       return
     }
-    set(() => ({ queue: tracks, index, isPlay: true }))
+    set(() => ({ queue, index, isPlay: true }))
+  },
+  moveQueue: delta => {
+    const state = get()
+    const { queue, mode, index, setIndex } = state
+
+    if (!queue.length) return 'empty'
+
+    const total = queue.length
+    const newIndex = index + delta
+
+    // 单曲循环：index 不变
+    if (mode === 'singleLoop') {
+      return 'restart'
+    }
+
+    // 顺序播放
+    if (mode === 'list') {
+      if (newIndex < 0 || newIndex >= total) {
+        return 'boundary' // 播放器 effect 会处理 audio.pause()
+      }
+      setIndex(newIndex)
+      return 'moved'
+    }
+
+    // 列表循环
+    if (mode === 'listLoop') {
+      if (total === 1) return 'restart'
+
+      const nextIndex = (newIndex + total) % total
+      setIndex(nextIndex)
+      return 'moved'
+    }
   },
   setIndex: index => set(() => ({ index })),
   setQueue: queue => set(() => ({ queue })),
@@ -65,14 +96,9 @@ const useStore = create((set, get) => ({
       favouriteRecordingIds,
     } = await api.relations()
 
-    // [{id:1,trackIds:[1,2,3]}]
-    const _libraryTrackIds = new Map()
-    libraryTrackIds.forEach(({ id, trackIds }) => {
-      _libraryTrackIds.set(id, new Set(trackIds))
-    })
-
     set({
-      libraryTrackIds: _libraryTrackIds,
+      libraryTrackIds: new Set(libraryTrackIds.map(lti => lti.id)),
+      libraryAlbumIds: new Set(libraryTrackIds.map(lti => lti.album_id)),
       favouriteTrackIds: new Set(favouriteTrackIds),
       favouriteAlbumIds: new Set(favouriteAlbumIds),
       favouritePlaylistIds: new Set(favouritePlaylistIds),
