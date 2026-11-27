@@ -68,6 +68,8 @@ export default {
   // 收藏录音
   favouriteRecording: data => put('/favourite/recording', data),
   unfavouriteRecording: data => del('/favourite/recording', data),
+  // 作品详情
+  work: params => get(`/work/${params.id}`),
   // 资料库曲目
   libraryTracks: () => get('/library/tracks'),
   // 收藏专辑列表

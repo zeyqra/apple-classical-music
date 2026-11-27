@@ -35,7 +35,7 @@ const Menu = ({ actions, target }) => {
             if (action === 'PLAY')
               return <div onClick={() => handleFetchTracksPlay({ id, type })}>Play</div>
             if (action === 'LIBRARY' && !isInLibrary({ id, type }))
-              return <div onClick={handleAddToLibrary}>Add to Library</div>
+              return <div onClick={() => handleAddToLibrary({ id, type })}>Add to Library</div>
             if (action === 'LIBRARY' && isInLibrary({ id, type }))
               return (
                 <div onClick={() => handleRemoveFromLibrary({ id, type })}>Remove from Library</div>

@@ -139,6 +139,7 @@ export const useActions = () => {
     let addToLibrary
     if (type === 'album') addToLibrary = addAlbumToLibrary
     if (type === 'track') addToLibrary = addTrackToLibrary
+
     await addToLibrary({ id })
   }
   const handleRemoveFromLibrary = async ({ id, type }) => {

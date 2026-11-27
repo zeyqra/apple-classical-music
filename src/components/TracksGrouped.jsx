@@ -4,7 +4,7 @@ import Menu from './Menu'
 
 const TracksGrouped = ({ tracks: orgTracks, hasToAlbum = true, onTrackPlay }) => {
   const tracksGrouped = tracksGroupByRecording(orgTracks)
-  const { handleAddToLibrary } = useActions()
+  const { handleAddToLibrary, handleNavigateTo } = useActions()
   const { isInLibrary } = useStatus()
   return (
     <div>
@@ -20,7 +20,13 @@ const TracksGrouped = ({ tracks: orgTracks, hasToAlbum = true, onTrackPlay }) =>
               <div className="flex">
                 <div>
                   <div>
-                    {composer_name}: {work_title}
+                    <span onClick={() => handleNavigateTo({ type: 'composer', id: composer_id })}>
+                      {composer_name}
+                    </span>
+                    :{' '}
+                    <span onClick={() => handleNavigateTo({ type: 'work', id: work_id })}>
+                      {work_title}
+                    </span>
                   </div>
                   <div>{performers.map(p => p.name).join(' / ')}</div>
                 </div>
@@ -49,9 +55,8 @@ const TracksGrouped = ({ tracks: orgTracks, hasToAlbum = true, onTrackPlay }) =>
                       ▶
                     </span>
                     <span>{t.title} </span>
-                    {!isInLibrary({ targetId: t.id, targetType: 'track' }) && (
-                      <button
-                        onClick={() => handleAddToLibrary({ targetId: t.id, targetType: 'track' })}>
+                    {!isInLibrary({ id: t.id, type: 'track' }) && (
+                      <button onClick={() => handleAddToLibrary({ id: t.id, type: 'track' })}>
                         +
                       </button>
                     )}
