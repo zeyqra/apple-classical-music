@@ -86,6 +86,7 @@ const useStore = create((set, get) => ({
   favouriteAlbumIds: new Set(),
   favouritePlaylistIds: new Set(),
   favouriteRecordingIds: new Set(),
+  favouriteWorkIds: new Set(),
 
   setRelations: async () => {
     const {
@@ -94,6 +95,7 @@ const useStore = create((set, get) => ({
       favouriteAlbumIds,
       favouritePlaylistIds,
       favouriteRecordingIds,
+      favouriteWorkIds,
     } = await api.relations()
 
     set({
@@ -103,6 +105,7 @@ const useStore = create((set, get) => ({
       favouriteAlbumIds: new Set(favouriteAlbumIds),
       favouritePlaylistIds: new Set(favouritePlaylistIds),
       favouriteRecordingIds: new Set(favouriteRecordingIds),
+      favouriteWorkIds: new Set(favouriteWorkIds),
     })
   },
 
@@ -188,6 +191,18 @@ const useStore = create((set, get) => ({
     const favouriteRecordingIds = await api.unfavouriteRecording(data)
 
     set({ favouriteRecordingIds: new Set(favouriteRecordingIds) })
+  },
+
+  favouriteWork: async data => {
+    const favouriteWorkIds = await api.favouriteWork(data)
+
+    set({ favouriteWorkIds: new Set(favouriteWorkIds) })
+  },
+
+  unfavouriteWork: async data => {
+    const favouriteWorkIds = await api.unfavouriteWork(data)
+
+    set({ favouriteWorkIds: new Set(favouriteWorkIds) })
   },
 
   createdPlaylists: [],

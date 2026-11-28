@@ -3,52 +3,72 @@ import { useEffect, useState } from 'react'
 import api from '../api.js'
 import Menu from '../components/Menu.jsx'
 import TracksGrouped from '../components/TracksGrouped.jsx'
-import { useActions, useStatus } from '../hooks.js'
+import { useActions, useQuery, useStatus } from '../hooks.js'
 import { usePlayer } from '../PlayerContext.jsx'
 
-const Album = () => {
+const Work = () => {
   const { id: work_id } = useParams()
+  const { result } = useQuery({ queryFn: api.work, params: { id: work_id } })
+  const {
+    id,
+    title = '',
+    composer_id,
+    composer_name = '',
+    choice_album = {},
+    recordings = [],
+    relatives = [],
+  } = result || {}
 
-  const [album, setAlbum] = useState({})
-  const { id, tracks = [], title = '', performers = [] } = album
-  const { setQueuePlay } = usePlayer()
-  const { isInLibrary } = useStatus()
-  const { handleAddToLibrary } = useActions()
-
-  const fetchAlbum = async () => {
-    const result = await api.album({ id: work_id })
-    setAlbum(result)
-  }
-
-  useEffect(() => {
-    fetchAlbum()
-  }, [])
-
-  const handlePlayClick = ({ index }) => {
-    setQueuePlay({ queue: album.tracks, index })
-  }
+  const { isFavourite } = useStatus()
+  const { handleFavourite, handleUnfavourite, handleFetchTracksPlay, handleNavigateTo } =
+    useActions()
 
   return (
     <div>
-      {/* 专辑信息 */}
+      {/* 作品信息 */}
       <div className="flex">
         <div>
+          <div>{composer_name}</div>
           <div>{title}</div>
-          <div>{performers.map(p => p.name).join(' / ')}</div>
-          <button onClick={() => handlePlayClick({ index: 0 })}>▶ </button>
-          {!isInLibrary({ id, type: 'album' }) && (
-            <button onClick={() => handleAddToLibrary({ id, type: 'album' })}>Add </button>
-          )}
-          <Menu
-            actions={['LIBRARY', 'PLAYLIST', 'FAVOURITE']}
-            target={{ ...album, type: 'album' }}
-          />
         </div>
+        {!isFavourite({ id, type: 'work' }) && (
+          <button onClick={() => handleFavourite({ id, type: 'work' })}>Favourite</button>
+        )}
+        {!!isFavourite({ id, type: 'work' }) && (
+          <button onClick={() => handleUnfavourite({ id, type: 'work' })}>Unfavourite</button>
+        )}
       </div>
-      {/* 专辑曲目 */}
-      <TracksGrouped tracks={tracks} hasToAlbum={false} onTrackPlay={handlePlayClick} />
+      {/* 推荐专辑 */}
+      <h1>Choice Album</h1>
+      <div className="flex">
+        <div>{choice_album.title}</div>
+        <button onClick={() => handleFetchTracksPlay({ type: 'album', id: choice_album.id })}>
+          ▶
+        </button>
+      </div>
+
+      {/* 热门录音 */}
+      <h1>Hot Recordings</h1>
+      <div>
+        {recordings.map(({ id, performers }) => (
+          <div key={id} onClick={() => handleNavigateTo({ type: 'recording', id })}>
+            {performers.map(pfm => pfm.name).join('、')}
+          </div>
+        ))}
+      </div>
+
+      {/* 相关作品 */}
+      <h1>Relative Wroks</h1>
+      <div>
+        {relatives.map(({ id, title, composer_id, composer_name }) => (
+          <div key={id}>
+            <div>{composer_name}</div>
+            <div>{title}</div>
+          </div>
+        ))}
+      </div>
     </div>
   )
 }
 
-export default Album
+export default Work
